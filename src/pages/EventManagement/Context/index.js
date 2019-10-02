@@ -6,6 +6,8 @@ import {
   storiesActions,
   bannersActions,
   speakersActions,
+  programmingActions,
+  partnersActions,
   INITIAL_STATE,
 } from './actions';
 
@@ -28,6 +30,8 @@ const EventProvider = ({ children }) => {
     stories: storiesActions(state, changeState),
     banners: bannersActions(state, changeState),
     speakers: speakersActions(state, changeState),
+    programming: programmingActions(state, changeState),
+    partners: partnersActions(state, changeState),
   };
 
   const value = { state, actions };
