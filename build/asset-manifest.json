@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.js": "/static/js/main.fea9d09e.chunk.js",
+    "main.js.map": "/static/js/main.fea9d09e.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.dcf58ed2.js",
+    "runtime~main.js.map": "/static/js/runtime~main.dcf58ed2.js.map",
+    "static/css/2.4b373abb.chunk.css": "/static/css/2.4b373abb.chunk.css",
+    "static/js/2.77f1e21d.chunk.js": "/static/js/2.77f1e21d.chunk.js",
+    "static/js/2.77f1e21d.chunk.js.map": "/static/js/2.77f1e21d.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.f0d8eba74f087741c8652f840e01bcf6.js": "/precache-manifest.f0d8eba74f087741c8652f840e01bcf6.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.4b373abb.chunk.css.map": "/static/css/2.4b373abb.chunk.css.map",
+    "static/media/add.svg": "/static/media/add.ee3502fe.svg",
+    "static/media/logo.svg": "/static/media/logo.5aa3fe0c.svg",
+    "static/media/logo_login.svg": "/static/media/logo_login.392de0df.svg",
+    "static/media/logout.svg": "/static/media/logout.dce37bed.svg",
+    "static/media/sort-down.svg": "/static/media/sort-down.b51e8e56.svg",
+    "static/media/trash.svg": "/static/media/trash.e262bca2.svg"
+  }
+}

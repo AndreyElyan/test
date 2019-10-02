@@ -3,7 +3,6 @@ import { simpleFlex } from '../../styles/mixins';
 
 const stylesDefault = `
   border: 1px solid #e4e4e4;
-  background-color: #ffffff;
   border-radius: 3px;
 `;
 
@@ -15,7 +14,7 @@ export const Container = styled.div`
     ${simpleFlex};
     ${stylesDefault}
     border: 1px solid #e4e4e4;
-    background-color: #ffffff;
+    background-color: ${props => props.background};
     width: ${props => props.width};
     height: ${props => props.height};
   }
@@ -24,6 +23,14 @@ export const Container = styled.div`
     color: #a0a0a0;
     font-size: 14px;
     font-weight: 600;
+    padding-bottom: 10px;
+    display: block;
+  }
+
+  p {
+    font-size: 13px;
+    font-weight: 300;
+    color: #a0a0a0;
     padding-bottom: 10px;
     display: block;
   }

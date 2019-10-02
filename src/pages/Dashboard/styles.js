@@ -47,7 +47,7 @@ export const Form = styled.form`
   justify-content: space-between;
 
   @media (min-width: 768px) {
-    flex-direction: row;
+    flex-direction: column;
   }
 `;
 

@@ -1,21 +1,12 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { any } from 'prop-types';
 
-const DEFAULT_STORY = {
-  image: null,
-  colorWhite: '',
-  colorPink: '',
-};
-
-const DEFAULT_BANNER = {
-  image: null,
-  title: '',
-  subTitle: '',
-};
-
-const INITIAL_STATE = {
-  stories: [DEFAULT_STORY],
-  banners: [DEFAULT_BANNER],
-};
+import {
+  eventsActions,
+  storiesActions,
+  bannersActions,
+  INITIAL_STATE,
+} from './actions';
 
 const EventContext = createContext(INITIAL_STATE);
 
@@ -32,56 +23,9 @@ const EventProvider = ({ children }) => {
   };
 
   const actions = {
-    events: {},
-    stories: {
-      addNewStory: () => {
-        const stories = [...state.stories, DEFAULT_STORY];
-        changeState({ tab: 'stories', value: stories });
-      },
-      deleteStory: indexStory => {
-        const stories = state.stories.filter(
-          (story, index) => indexStory !== index
-        );
-        changeState({ tab: 'stories', value: stories });
-      },
-      editStory: ({ index, label, value }) => {
-        const story = state.stories[index];
-
-        state.stories[index] = {
-          ...story,
-          [label]: value,
-        };
-
-        const newStories = [...state.stories];
-
-        changeState({ tab: 'stories', value: newStories });
-      },
-    },
-
-    banners: {
-      addNewBanner: () => {
-        const banners = [...state.banners, DEFAULT_BANNER];
-        changeState({ tab: 'banners', value: banners });
-      },
-      deleteBanner: indexBanner => {
-        const banners = state.banners.filter(
-          (banner, index) => indexBanner !== index
-        );
-        changeState({ tab: 'banners', value: banners });
-      },
-      editBanner: ({ index, label, value }) => {
-        const banner = state.banners[index];
-
-        state.banners[index] = {
-          ...banner,
-          [label]: value,
-        };
-
-        const newBanners = [...state.banners];
-
-        changeState({ tab: 'banners', value: newBanners });
-      },
-    },
+    events: eventsActions(state, changeState),
+    stories: storiesActions(state, changeState),
+    banners: bannersActions(state, changeState),
   };
 
   const value = { state, actions };
@@ -89,6 +33,10 @@ const EventProvider = ({ children }) => {
   return (
     <EventContext.Provider value={value}>{children}</EventContext.Provider>
   );
+};
+
+EventProvider.propTypes = {
+  children: any.isRequired,
 };
 
 export default EventProvider;

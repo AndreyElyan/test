@@ -18,7 +18,7 @@ const CalendarIcon = ({ color }) => (
       <mask id="b" fill="#fff">
         <use xlinkHref="#a" />
       </mask>
-      <use fill={color} colorRule="nonzero" xlinkHref="#a" />
+      <use fill={color} xlinkHref="#a" />
       <g fill={color} mask="url(#b)">
         <path d="M0 0h30v30H0z" />
       </g>

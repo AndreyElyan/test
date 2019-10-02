@@ -68,14 +68,19 @@ export const SponsorClass = styled.div`
 export const WrapperRegisters = styled.div`
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
-  height: 420px;
   width: 1150px;
   margin-right: 50px;
   background: #ffffff;
   border-radius: 3px;
 
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.05);
+
+  ul {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 15px;
+    margin-top: 30px;
+  }
 
   header {
     display: block;

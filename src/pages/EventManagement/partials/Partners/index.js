@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from '4all-ui/components/Select';
 import Checkbox from '4all-ui/components/Checkbox';
+
+import api from '../../../../services/api';
+import { error } from '../../../../services/notifier';
 
 import Search from '../../../../components/Icons/Search';
 import PickerImage from '../../../../components/Picker/Image';
@@ -33,6 +36,32 @@ import {
 } from './styles';
 
 export default function Partners() {
+  const [order] = useState(null);
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getList = async () => {
+    if (loading) return null;
+
+    setLoading(true);
+
+    try {
+      const { data } = await api.get(
+        `https://abf.homolog.api.somosdx.co/partner?itemsPerPage=100&currentPage=0&eventId=5d5dafda81ca861b5bf038dc`
+      );
+
+      setList(data);
+    } catch (err) {
+      error('Não foi possível recuperar os dados!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getList();
+  }, [order]);
+
   function submitForm(event) {
     if (event) event.preventDefault();
   }
@@ -184,19 +213,23 @@ export default function Partners() {
                 <strong>Vídeo</strong>
               </Column>
             </HeaderTable>
-            <div>
-              <Row>
-                <Column width="45%">
-                  <p>Andrey Elyan</p>
-                </Column>
-                <Column width="50%">
-                  <p>Desenvolvedor React</p>
-                </Column>
-                <Column width="35%">
-                  <p>linkedin.com/andreyelyan</p>
-                </Column>
-              </Row>
-            </div>
+            {list &&
+              list.length > 0 &&
+              list.map(element => (
+                <div key={element.id}>
+                  <Row>
+                    <Column width="45%">
+                      <p>{element.numberOfPages}</p>
+                    </Column>
+                    <Column width="50%">
+                      <p>Desenvolvedor React</p>
+                    </Column>
+                    <Column width="35%">
+                      <p>linkedin.com/andreyelyan</p>
+                    </Column>
+                  </Row>
+                </div>
+              ))}
           </Table>
         </TableWrapper>
       </WrapperRegisters>

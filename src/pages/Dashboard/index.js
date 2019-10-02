@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { parseISO, format } from 'date-fns';
 
 import Tag from '4all-ui/components/Tag';
 
@@ -54,7 +55,6 @@ export default function Dashboard() {
       const { data } = await api.get(`/event?beta=true`);
 
       setList(data);
-      console.log(data);
     } catch (err) {
       error('Não foi possível recuperar os dados!');
     } finally {
@@ -72,6 +72,10 @@ export default function Dashboard() {
     if (search.trim() !== '') {
       getList();
     }
+  };
+
+  const transformDate = date => {
+    format(new Date(date), 'DD/MM/YYYY');
   };
 
   const makeOrder = newOrder => {
@@ -151,7 +155,7 @@ export default function Dashboard() {
                     </Column>
                     <Column width="45%">
                       <Link to="/events/edit" />
-                      <p>Vem um array com três datas?</p>
+                      <p>{transformDate(element.days[0])}</p>
                     </Column>
                     <Column width="10%">
                       <Tag

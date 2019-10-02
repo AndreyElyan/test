@@ -94,7 +94,7 @@ export const WrapperDescription = styled.div`
   justify-content: space-between;
   flex-direction: column;
   height: 130px;
-  margin-bottom: 20px;
+  margin-bottom: 35px;
 
   strong {
     align-self: flex-start;

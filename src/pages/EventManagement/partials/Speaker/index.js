@@ -1,4 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
+
+import api from '../../../../services/api';
+import { error } from '../../../../services/notifier';
 
 import Search from '../../../../components/Icons/Search';
 import Input from '../../../../components/Input';
@@ -30,9 +33,35 @@ import {
 } from './styles';
 
 export default function Speaker() {
+  const [loading, setLoading] = useState(false);
+  const [list, setList] = useState([]);
+  const [order] = useState(null);
+
   const submitForm = useCallback(event => {
     if (event) event.preventDefault();
   }, []);
+
+  const getList = async () => {
+    if (loading) return null;
+
+    setLoading(true);
+
+    try {
+      const { data } = await api.get(
+        `/person?eventId=5d5dafda81ca861b5bf038dc&itemsPerPage=1&currentPage=`
+      );
+
+      setList(data);
+    } catch (err) {
+      error('Não foi possível recuperar os dados!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getList();
+  }, [order]);
 
   return (
     <Container>
@@ -53,20 +82,30 @@ export default function Speaker() {
           </div>
 
           <WrapperInputs>
-            <strong>Nome do Palestrante</strong>
-            <Input className="name" width="480px" height="45px" type="text" />
+            <Input
+              label="Nome do Palestrante"
+              className="name"
+              width="480px"
+              height="45px"
+              type="text"
+            />
 
-            <strong>Linkedin</strong>
-            <Input className="link" width="480px" height="45px" type="text" />
+            <Input
+              label="Linkedin"
+              className="link"
+              width="480px"
+              height="45px"
+              type="text"
+            />
           </WrapperInputs>
 
           <WrapperDescription>
-            <strong>Descrição</strong>
             <Input
               className="description"
               width="325px"
               height="135px"
               type="text"
+              label="Descrição"
             />
           </WrapperDescription>
 
@@ -113,19 +152,23 @@ export default function Speaker() {
                 </button>
               </Column>
             </HeaderTable>
-            <div>
-              <Row>
-                <Column width="45%">
-                  <p>Andrey Elyan</p>
-                </Column>
-                <Column width="50%">
-                  <p>Desenvolvedor React</p>
-                </Column>
-                <Column width="35%">
-                  <p>linkedin.com/andreyelyan</p>
-                </Column>
-              </Row>
-            </div>
+            {list &&
+              list.length > 0 &&
+              list.map(element => (
+                <div key={element.id}>
+                  <Row>
+                    <Column width="45%">
+                      <p>{element.people}</p>
+                    </Column>
+                    <Column width="50%">
+                      <p>Desenvolvedor React</p>
+                    </Column>
+                    <Column width="35%">
+                      <p>linkedin.com/andreyelyan</p>
+                    </Column>
+                  </Row>
+                </div>
+              ))}
           </Table>
         </TableWrapper>
       </ListSpeakers>

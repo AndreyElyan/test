@@ -63,19 +63,19 @@ export default function Participants() {
             <div>
               <Row>
                 <Column width="45%">
-                  <p>Andrey Elyan</p>
+                  <p>Aguarde...</p>
                 </Column>
                 <Column width="45%">
-                  <p>19/07/1998</p>
+                  <p>Aguarde...</p>
                 </Column>
                 <Column width="35%">
-                  <p>(51) 98580-9513</p>
+                  <p>Aguarde...</p>
                 </Column>
                 <Column width="35%">
                   <p>4all</p>
                 </Column>
                 <Column width="35%">
-                  <p>Dev</p>
+                  <p>Aguarde...</p>
                 </Column>
               </Row>
             </div>

@@ -50,21 +50,19 @@ function EventManagement(props) {
   ];
 
   return (
-    <>
+    <EventProvider>
       <Header />
       <Container>
         <SubHeader />
         <TabPanel links={links} />
         <WrapperBox>
-          <EventProvider>
-            <Tabs />
-          </EventProvider>
+          <Tabs />
         </WrapperBox>
         <WrapperFooter>
           <Footer />
         </WrapperFooter>
       </Container>
-    </>
+    </EventProvider>
   );
 }
 

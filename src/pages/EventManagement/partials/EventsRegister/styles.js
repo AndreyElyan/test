@@ -117,6 +117,7 @@ export const ButtonStyle = styled.button`
   display: flex;
   align-items: center;
   padding: 0 10px;
+  position: relative;
 
   strong {
     margin-top: 5px;
@@ -138,13 +139,15 @@ export const ButtonStyle = styled.button`
 
 export const WrapperInterest = styled.form``;
 
-export const CalendarOverlay = styled.div`
+export const Overlay = styled.div`
   position: fixed;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   z-index: 1;
+  cursor: initial;
+  display: ${props => (props.isOpen ? 'block' : 'none')};
 `;
 
 export const WrapperInput = styled.div`
@@ -171,7 +174,7 @@ export const WrapperInput = styled.div`
       `}
   }
 
-  ${CalendarOverlay} {
+  ${Overlay} {
     display: ${props => (props.isOpenCalendar ? 'block' : 'none')};
   }
 `;
@@ -201,4 +204,41 @@ export const LabelStatus = styled.div`
 
 export const LabelTrail = styled.div`
   ${Label}
+`;
+
+export const WrapperColors = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  position: absolute;
+  top: 60px;
+  right: 0px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 2;
+  cursor: initial;
+
+  ${props =>
+    props.isOpen &&
+    css`
+      opacity: 1;
+      visibility: visible;
+    `}
+  ${Overlay} {
+    display: ${props => (props.isOpen ? 'block' : 'none')};
+  }
+`;
+
+export const LabelColor = styled.div`
+  ${simpleFlex};
+  justify-content: center;
+  border: ${props => (props.border ? '1px solid #979797' : null)};
+  width: 30px;
+  height: 30px;
+  background-color: ${props => props.color};
+  padding: 0 10px;
+  cursor: pointer;
 `;

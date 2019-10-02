@@ -5,22 +5,33 @@ import { Container, InputStyles, IconWrapper } from './styles';
 
 let id = 0;
 
-function Input({ width, height, icon, label, onChange, ...props }) {
+function Input({
+  width,
+  height,
+  icon,
+  label,
+  description,
+  background,
+  onChange,
+  ...props
+}) {
   useEffect(() => {
     id += 1;
   }, []);
 
   const labelFor = `${id}-label`;
 
-  const handleChange = event => {
-    onChange(event.target.value);
-  };
-
   return (
-    <Container width={width} height={height}>
+    <Container width={width} height={height} background={background}>
       {label && <label htmlFor={labelFor}>{label}</label>}
+      {description && <p>{description}</p>}
+
       <div>
-        <InputStyles id={labelFor} {...props} onChange={handleChange} />
+        <InputStyles
+          id={labelFor}
+          {...props}
+          onChange={event => onChange(event.target.value)}
+        />
         {icon && <IconWrapper>{icon}</IconWrapper>}
       </div>
     </Container>
@@ -30,6 +41,7 @@ function Input({ width, height, icon, label, onChange, ...props }) {
 Input.defaultProps = {
   width: '500px',
   height: '45px',
+  onChange: () => {},
 };
 
 Input.propTypes = {
