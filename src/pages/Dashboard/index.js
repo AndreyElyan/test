@@ -75,7 +75,7 @@ export default function Dashboard() {
   };
 
   const transformDate = date => {
-    format(new Date(date), 'DD/MM/YYYY');
+    return format(new Date(), 'mm/dd/yyyy');
   };
 
   const makeOrder = newOrder => {

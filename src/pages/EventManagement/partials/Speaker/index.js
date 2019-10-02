@@ -3,6 +3,8 @@ import React, { useCallback, useState, useEffect } from 'react';
 import api from '../../../../services/api';
 import { error } from '../../../../services/notifier';
 
+import { useEvent } from '../../Context/index';
+
 import Search from '../../../../components/Icons/Search';
 import Input from '../../../../components/Input';
 import {
@@ -36,6 +38,10 @@ export default function Speaker() {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [order] = useState(null);
+
+  const { state, actions } = useEvent();
+  const { speakers } = state;
+  const { speakers: speakersActions } = actions;
 
   const submitForm = useCallback(event => {
     if (event) event.preventDefault();
@@ -88,6 +94,8 @@ export default function Speaker() {
               width="480px"
               height="45px"
               type="text"
+              onChange={speakersActions.setName}
+              value={speakers.name}
             />
 
             <Input

@@ -22,10 +22,18 @@ const DEFATULT_EVENTS = {
   tags: [],
 };
 
+const DEFAULT_SPEAKER = {
+  name: '',
+  profileImage: '',
+  description: '',
+  linkedin: '',
+};
+
 export const INITIAL_STATE = {
   events: DEFATULT_EVENTS,
   stories: DEFAULT_STORY,
   banners: DEFAULT_BANNER,
+  speakers: DEFAULT_SPEAKER,
 };
 
 export const storiesActions = (state, setState) => ({
@@ -122,5 +130,16 @@ export const eventsActions = (state, setState) => ({
     };
 
     setState({ tab: 'events', value: events });
+  },
+});
+
+export const speakersActions = (state, setState) => ({
+  setName: name => {
+    const speakers = {
+      ...state.speakers,
+      name,
+    };
+
+    setState({ tab: 'events', value: speakers });
   },
 });

@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { any } from 'prop-types';
 
 import {
   eventsActions,
   storiesActions,
   bannersActions,
+  speakersActions,
   INITIAL_STATE,
 } from './actions';
 
@@ -26,6 +27,7 @@ const EventProvider = ({ children }) => {
     events: eventsActions(state, changeState),
     stories: storiesActions(state, changeState),
     banners: bannersActions(state, changeState),
+    speakers: speakersActions(state, changeState),
   };
 
   const value = { state, actions };
