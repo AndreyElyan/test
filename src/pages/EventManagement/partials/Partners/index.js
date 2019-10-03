@@ -36,6 +36,7 @@ import {
 } from './styles';
 
 export default function Partners() {
+  const [checked, setChecked] = useState(true);
   const [order] = useState(null);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -118,21 +119,13 @@ export default function Partners() {
             <WrapperSelect>
               <Select
                 width="288px"
-                onChange={submitForm}
+                onChange={() => setChecked(!checked)}
                 options={[
                   {
                     options: [
-                      { value: '4', label: 'Value 041231121', disabled: true },
+                      { value: '4', label: 'Value 041231121' },
                       { value: '5', label: '05' },
                       { value: '6', label: '06' },
-                    ],
-                  },
-                  {
-                    label: 'Example',
-                    options: [
-                      { value: '1', label: 'Value 01' },
-                      { value: '2', label: 'Value 02' },
-                      { value: '3', label: 'Value 03' },
                     ],
                   },
                 ]}
@@ -141,12 +134,13 @@ export default function Partners() {
               />
 
               <Checkbox
-                onChange={submitForm}
                 name="expositor"
                 label="Expositor"
                 customStyles={{
                   padding: ' 0 40px',
                 }}
+                checked={checked}
+                onChange={() => setChecked(!checked)}
               />
             </WrapperSelect>
             <WrapperButtonPartner>

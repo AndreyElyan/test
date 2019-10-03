@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
 
 import Tag from '4all-ui/components/Tag';
 

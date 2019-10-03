@@ -103,6 +103,11 @@ export const WrapperTrails = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
+
+  input {
+    font-weight: bold;
+    color: #333;
+  }
 `;
 
 export const ButtonStyle = styled.button`

@@ -17,7 +17,7 @@ export const Container = styled.div`
 export const NewProgramming = styled.div`
   display: flex;
   flex-direction: column;
-  height: 685px;
+  height: 805px;
   background: #ffffff;
   border-radius: 3px;
   width: 100%;
@@ -44,9 +44,7 @@ export const WrapperTitle = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-
   width: 100%;
-
   justify-content: center;
 `;
 
@@ -115,7 +113,7 @@ export const LabelSpeaker = styled.div`
 
 export const LabelMediator = styled.div`
   ${Label}
-  margin-left: 465px;
+  margin-left: 365px;
 `;
 
 export const WrapperSelectSpeaker = styled.div`

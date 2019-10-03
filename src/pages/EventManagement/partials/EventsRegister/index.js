@@ -161,9 +161,10 @@ function EventsRegister() {
             <InputStyles
               width="340px"
               type="text"
-              disabled
               description="Adicione uma trilha e escolha a cor de identificação"
               background={events.trails}
+              onChange={eventsActions.setTitleColor}
+              value={events.titleColor}
             />
 
             <ButtonStyle type="button" onClick={handleOpenColors}>

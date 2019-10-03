@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Select from '4all-ui/components/Select';
 
+import PickerImage from '../../../../components/Picker/Image';
 import Input from '../../../../components/Input';
 import {
   Table,
@@ -77,6 +78,10 @@ export default class Programming extends Component {
 
           <WrapperTitle>
             <Input label="Título" width="1066px" />
+          </WrapperTitle>
+
+          <WrapperTitle>
+            <Input label="Sub Título" width="1066px" />
           </WrapperTitle>
 
           <WrapperPickers>

@@ -155,6 +155,15 @@ export const eventsActions = (state, setState) => ({
     setState({ tab: 'events', value: events });
   },
 
+  setTitleColor: titleColor => {
+    const events = {
+      ...state.events,
+      titleColor,
+    };
+
+    setState({ tab: 'events', value: events });
+  },
+
   setTags: tags => {
     const events = {
       ...state.events,
