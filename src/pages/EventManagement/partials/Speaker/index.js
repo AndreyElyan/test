@@ -104,6 +104,8 @@ export default function Speaker() {
               width="480px"
               height="45px"
               type="text"
+              onChange={speakersActions.setLinkedin}
+              value={speakers.linkedin}
             />
           </WrapperInputs>
 
@@ -114,6 +116,8 @@ export default function Speaker() {
               height="135px"
               type="text"
               label="Descrição"
+              onChange={speakersActions.setDescription}
+              value={speakers.description}
             />
           </WrapperDescription>
 

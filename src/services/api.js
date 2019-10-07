@@ -13,7 +13,9 @@ const api = axios.create({
 api.interceptors.request.use(request => {
   const tokenStorage = localStorage.getItem('@Omni:token');
   if (tokenStorage) {
-    request.headers.Authorization = tokenStorage.replace('"', '');
+    request.headers.Authorization = tokenStorage
+      .replace('"', '')
+      .replace('"', '');
   } else {
     delete request.headers.Authorization;
   }

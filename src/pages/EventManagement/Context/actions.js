@@ -42,21 +42,19 @@ const DEFAULT_PROGRAMMING = {
 };
 
 export const DEFAULT_PARTNERS = {
-  partners: {
-    name: '',
-    description: '',
-    videoUrl: '',
-    siteUrl: '',
-    isExhibitor: false,
-    sponsorCategoryId: '',
-    videoThumb: '',
-    logo: '',
-  },
+  name: '',
+  description: '',
+  videoUrl: '',
+  siteUrl: '',
+  isExhibitor: false,
+  sponsorCategoryId: '',
+  videoThumb: '',
+  logo: '',
+};
 
-  sponsorCategory: {
-    title: '',
-    order: 0,
-  },
+export const DEFAULT_SPONSORCATEGORY = {
+  title: '',
+  order: '',
 };
 
 export const INITIAL_STATE = {
@@ -66,6 +64,7 @@ export const INITIAL_STATE = {
   speakers: DEFAULT_SPEAKER,
   programming: DEFAULT_PROGRAMMING,
   partners: DEFAULT_PARTNERS,
+  sponsorCategory: DEFAULT_SPONSORCATEGORY,
 };
 
 export const storiesActions = (state, setState) => ({
@@ -181,7 +180,7 @@ export const speakersActions = (state, setState) => ({
       name,
     };
 
-    setState({ tab: 'events', value: speakers });
+    setState({ tab: 'speakers', value: speakers });
   },
 
   setImage: image => {
@@ -190,7 +189,7 @@ export const speakersActions = (state, setState) => ({
       image,
     };
 
-    setState({ tab: 'events', value: speakers });
+    setState({ tab: 'speakers', value: speakers });
   },
 
   setDescription: description => {
@@ -199,7 +198,7 @@ export const speakersActions = (state, setState) => ({
       description,
     };
 
-    setState({ tab: 'events', value: speakers });
+    setState({ tab: 'speakers', value: speakers });
   },
 
   setLinkedin: linkedin => {
@@ -208,7 +207,7 @@ export const speakersActions = (state, setState) => ({
       linkedin,
     };
 
-    setState({ tab: 'events', value: speakers });
+    setState({ tab: 'speakers', value: speakers });
   },
 });
 
@@ -219,7 +218,7 @@ export const programmingActions = (state, setState) => ({
       title,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setSubTitle: subTitle => {
@@ -228,7 +227,7 @@ export const programmingActions = (state, setState) => ({
       subTitle,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setStartTime: startTime => {
@@ -237,7 +236,7 @@ export const programmingActions = (state, setState) => ({
       startTime,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setEndTime: endTime => {
@@ -246,7 +245,7 @@ export const programmingActions = (state, setState) => ({
       endTime,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setDescription: description => {
@@ -255,7 +254,7 @@ export const programmingActions = (state, setState) => ({
       description,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setPersonCategories: personCategories => {
@@ -264,7 +263,7 @@ export const programmingActions = (state, setState) => ({
       personCategories,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setTrackId: trackId => {
@@ -273,7 +272,7 @@ export const programmingActions = (state, setState) => ({
       trackId,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setCategoryId: categoryId => {
@@ -282,7 +281,7 @@ export const programmingActions = (state, setState) => ({
       categoryId,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 
   setImage: image => {
@@ -291,7 +290,7 @@ export const programmingActions = (state, setState) => ({
       image,
     };
 
-    setState({ tab: 'events', value: programming });
+    setState({ tab: 'programming', value: programming });
   },
 });
 
@@ -302,7 +301,7 @@ export const partnersActions = (state, setState) => ({
       name,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setDescription: description => {
@@ -311,7 +310,7 @@ export const partnersActions = (state, setState) => ({
       description,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setVideoUrl: videoUrl => {
@@ -320,7 +319,7 @@ export const partnersActions = (state, setState) => ({
       videoUrl,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setSiteUrl: siteUrl => {
@@ -329,7 +328,7 @@ export const partnersActions = (state, setState) => ({
       siteUrl,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setIsExhibitor: isExhibitor => {
@@ -338,7 +337,7 @@ export const partnersActions = (state, setState) => ({
       isExhibitor,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setSponsorCategoryId: sponsorCategoryId => {
@@ -347,7 +346,7 @@ export const partnersActions = (state, setState) => ({
       sponsorCategoryId,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setVideoThumb: videoThumb => {
@@ -356,7 +355,7 @@ export const partnersActions = (state, setState) => ({
       videoThumb,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
   },
 
   setLogo: logo => {
@@ -365,6 +364,31 @@ export const partnersActions = (state, setState) => ({
       logo,
     };
 
-    setState({ tab: 'events', value: partners });
+    setState({ tab: 'partners', value: partners });
+  },
+});
+
+export const sponsorCategoryActions = (state, setState) => ({
+  addNewSponsor: () => {
+    const sponsors = [...state.sponsors, DEFAULT_SPONSORCATEGORY];
+    setState({ tab: 'partners', value: sponsors });
+  },
+  deleteSponsor: indexSponsor => {
+    const sponsors = state.sponsors.filter(
+      (sponsor, index) => indexSponsor !== index
+    );
+    setState({ tab: 'partners', value: sponsors });
+  },
+  editSponsor: ({ index, label, value }) => {
+    const sponsor = state.sponsor[index];
+
+    state.sponsors[index] = {
+      ...sponsor,
+      [label]: value,
+    };
+
+    const newSponsor = [...state.sponsors];
+
+    setState({ tab: 'partners', value: newSponsor });
   },
 });

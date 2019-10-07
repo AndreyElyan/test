@@ -64,7 +64,7 @@ export const Profile = styled.div`
     strong {
       display: block;
       color: #f9f9f9;
-      margin-right: 10px;
+      margin-left: 10px;
     }
 
     small {

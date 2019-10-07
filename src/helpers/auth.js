@@ -1,6 +1,6 @@
 import { setItem, removeItem } from './storage';
 
-const key = '@Omni:token'; // TODO - CRIAR ARQUIVO DE CONSTANTES.
+const key = '@Omni:token';
 
 export const removeUser = () => {
   removeItem(key);

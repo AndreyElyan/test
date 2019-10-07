@@ -8,6 +8,7 @@ import {
   speakersActions,
   programmingActions,
   partnersActions,
+  sponsorCategoryActions,
   INITIAL_STATE,
 } from './actions';
 
@@ -25,6 +26,10 @@ const EventProvider = ({ children }) => {
     });
   };
 
+  const setContext = ({ tab, value }) => {
+    changeState({ tab, value });
+  };
+
   const actions = {
     events: eventsActions(state, changeState),
     stories: storiesActions(state, changeState),
@@ -32,6 +37,8 @@ const EventProvider = ({ children }) => {
     speakers: speakersActions(state, changeState),
     programming: programmingActions(state, changeState),
     partners: partnersActions(state, changeState),
+    sponsorCategory: sponsorCategoryActions(state, changeState),
+    setContext,
   };
 
   const value = { state, actions };

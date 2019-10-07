@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Checkbox from '4all-ui/components/Checkbox';
 
 import Left from '../../../../components/Icons/Left';
@@ -6,6 +7,9 @@ import Left from '../../../../components/Icons/Left';
 import api from '../../../../services/api';
 import history from '../../../../services/history';
 import { error } from '../../../../services/notifier';
+
+import { signInSucces } from '../../../../store/modules/auth/actions';
+import { setItem } from '../../../../helpers/storage';
 
 import { setUserSession } from '../../../../helpers/auth';
 
@@ -26,6 +30,7 @@ import {
 } from '../../styles';
 
 export default function Login({ setStep, steps }) {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [checked, setChecked] = useState(true);
@@ -40,6 +45,10 @@ export default function Login({ setStep, steps }) {
       const { data } = await api.post('/admin/login', { email, password });
       setUserSession(data.bearer);
       if (data.isFirst) setFirst(true);
+
+      dispatch(signInSucces(data));
+      setItem('user', data);
+
       history.push('/');
     } catch (err) {
       error('Usuário ou senha incorretos');

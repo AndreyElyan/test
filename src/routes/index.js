@@ -15,10 +15,10 @@ export default function Routes() {
   return (
     <Switch>
       <PrivateRoute path="/" exact component={Dashboard} isPrivate />
+      <PrivateRoute path="/events/:id" component={EventManagement} isPrivate />
+
       <Route path="/login" exact component={SignIn} />
       <Route path="/newPassword" exact component={NewPassword} />
-
-      <Route path="/events/:id" component={EventManagement} isPrivate />
     </Switch>
   );
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import Select from '4all-ui/components/Select';
 
-import PickerImage from '../../../../components/Picker/Image';
 import Input from '../../../../components/Input';
 import {
   Table,

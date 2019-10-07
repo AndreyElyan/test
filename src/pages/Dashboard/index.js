@@ -11,6 +11,7 @@ import add from '../../assets/button/add.svg';
 import sortdown from '../../assets/button/sort-down.svg';
 
 import Input from '../../components/Input';
+import Loader from '../../components/Loader';
 import Search from '../../components/Icons/Search';
 import {
   Table,
@@ -40,11 +41,28 @@ const MAP_ORDERS = {
   state_asc: 'state',
 };
 
-export default function Dashboard() {
+export default function Dashboard({ history }) {
   const [search, setSearch] = useState('');
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
+
+  const redirectToEvent = idEvent => {
+    history.push(`/events/${idEvent}`);
+  };
+
+  const createEvent = async () => {
+    try {
+      const { data } = await api.post('/event', {
+        title: '',
+        status: 'INACTIVE',
+      });
+
+      redirectToEvent(data.id);
+    } catch (err) {
+      error('Não foi possível recuperar os dados!');
+    }
+  };
 
   const getList = async () => {
     if (loading) return null;
@@ -53,7 +71,6 @@ export default function Dashboard() {
 
     try {
       const { data } = await api.get(`/event?beta=true`);
-
       setList(data);
     } catch (err) {
       error('Não foi possível recuperar os dados!');
@@ -75,7 +92,7 @@ export default function Dashboard() {
   };
 
   const transformDate = date => {
-    return format(new Date(), 'mm/dd/yyyy');
+    return format(date, 'dd/MM/yyyy');
   };
 
   const makeOrder = newOrder => {
@@ -90,17 +107,17 @@ export default function Dashboard() {
         </Header>
 
         <HeaderRow>
-          <Form onSubmit={() => submitForm}>
+          <Form onSubmit={submitForm}>
             <Input
               name="text"
               placeholder="Nome, tipo, data, local, último status..."
-              icon={<Search onClick={() => submitForm} />}
+              icon={<Search onClick={submitForm} />}
               value={search}
               onChange={setSearch}
             />
           </Form>
 
-          <ButtonStyle to="/events/new">
+          <ButtonStyle onClick={createEvent}>
             <img src={add} alt="Criar Evento" />
 
             <strong>Criar Evento</strong>
@@ -108,68 +125,81 @@ export default function Dashboard() {
         </HeaderRow>
 
         <TableWrapper>
-          <Table>
-            <HeaderTable>
-              <Column width="45%">
-                <strong>Nome</strong>
-              </Column>
+          {loading ? (
+            <Loader />
+          ) : (
+            <Table>
+              <HeaderTable>
+                <Column width="45%">
+                  <strong>Nome</strong>
+                </Column>
 
-              <Column width="45%">
-                <strong>Data</strong>
-                <button
-                  type="button"
-                  onClick={() =>
-                    makeOrder(
-                      order === MAP_ORDERS.date_desc
-                        ? MAP_ORDERS.date_asc
-                        : MAP_ORDERS.date_desc
-                    )
-                  }
-                >
-                  <img src={sortdown} alt="" />
-                </button>
-              </Column>
-              <Column width="10%">
-                <strong>Último status</strong>
-                <button
-                  type="button"
-                  onClick={() =>
-                    makeOrder(
-                      order === MAP_ORDERS.state_desc
-                        ? MAP_ORDERS.state_asc
-                        : MAP_ORDERS.state_desc
-                    )
-                  }
-                >
-                  <img src={sortdown} alt="" />
-                </button>
-              </Column>
-            </HeaderTable>
-            {list &&
-              list.length > 0 &&
-              list.map(element => (
-                <div key={element.id}>
-                  <Row>
-                    <Column width="45%">
-                      <p>{element.title}</p>
-                    </Column>
-                    <Column width="45%">
-                      <Link to="/events/edit" />
-                      <p>{transformDate(element.days[0])}</p>
-                    </Column>
-                    <Column width="10%">
-                      <Tag
-                        bgColor="#FFFFFF"
-                        color="#d34848"
-                        border="1px solid #E4E4E4"
-                      >
-                        {element.status}
-                      </Tag>
-                    </Column>
-                  </Row>
-                </div>
-              ))}
-          </Table>
+                <Column width="45%">
+                  <strong>Data</strong>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      makeOrder(
+                        order === MAP_ORDERS.date_desc
+                          ? MAP_ORDERS.date_asc
+                          : MAP_ORDERS.date_desc
+                      )
+                    }
+                  >
+                    <img src={sortdown} alt="" />
+                  </button>
+                </Column>
+                <Column width="10%">
+                  <strong>Último status</strong>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      makeOrder(
+                        order === MAP_ORDERS.state_desc
+                          ? MAP_ORDERS.state_asc
+                          : MAP_ORDERS.state_desc
+                      )
+                    }
+                  >
+                    <img src={sortdown} alt="" />
+                  </button>
+                </Column>
+              </HeaderTable>
+              {list &&
+                list.length > 0 &&
+                list.map(element => {
+                  const date = element.days[0]
+                    ? transformDate(element.days[0])
+                    : null;
+
+                  return (
+                    <div
+                      key={element.id}
+                      onClick={() => redirectToEvent(element.id)}
+                    >
+                      <Row>
+                        <Column width="45%">
+                          <p>{element.title}</p>
+                        </Column>
+                        <Column width="45%">
+                          <Link to="/events/edit" />
+                          {date && <p>{date}</p>}
+                        </Column>
+                        <Column width="10%">
+                          <Tag
+                            bgColor="#FFFFFF"
+                            color="#d34848"
+                            border="1px solid #E4E4E4"
+                          >
+                            {element.status}
+                          </Tag>
+                        </Column>
+                      </Row>
+                    </div>
+                  );
+                })}
+            </Table>
+          )}
         </TableWrapper>
       </Content>
     </ContainerWrapper>

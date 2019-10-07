@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { darken } from 'polished';
 
 import { simpleFlex, container } from '../../styles/mixins';
@@ -57,7 +56,7 @@ export const HeaderRow = styled.div`
   padding: 0 30px;
 `;
 
-export const ButtonStyle = styled(Link)`
+export const ButtonStyle = styled.div`
   width: 167px;
   height: 50px;
   background-color: ${({ theme }) => theme.red};

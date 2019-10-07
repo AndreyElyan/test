@@ -15,22 +15,21 @@ import {
   Row,
 } from '../../../../components/Table';
 
-import add from '../../../../assets/button/add.svg';
+import { useEvent } from '../../Context';
+
+import SponsorCategory from './SponsorCategory';
 
 import {
   Container,
   NewPartner,
-  SponsorClass,
   Content,
   WrapperRegisters,
   WrapperImg,
   LabelWrapper,
-  WrapperSponsors,
   HeaderRow,
   Form,
   TableWrapper,
   WrapperSelect,
-  WrapperButtonClass,
   Button,
   WrapperButtonPartner,
 } from './styles';
@@ -40,6 +39,9 @@ export default function Partners() {
   const [order] = useState(null);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { state, actions } = useEvent();
+  const { sponsors } = state;
 
   const getList = async () => {
     if (loading) return null;
@@ -61,124 +63,107 @@ export default function Partners() {
 
   useEffect(() => {
     getList();
-  }, [order]);
+  }, [order, getList]);
 
   function submitForm(event) {
     if (event) event.preventDefault();
   }
   return (
-    <>
-      <Container>
-        <NewPartner>
-          <header>
-            <strong>Novo Parceiro</strong>
-          </header>
-          <Content>
-            <WrapperImg>
-              <PickerImage name="banner" />
-              <LabelWrapper>
-                <div>
-                  <strong>JPEG,JPG</strong>
-                  <strong>ou PNG</strong>
-                </div>
-                <span>
-                  <strong>Máximo</strong>
-                  <strong>de 2Mb</strong>
-                </span>
-              </LabelWrapper>
-            </WrapperImg>
+    <Container>
+      <NewPartner>
+        <header>
+          <strong>Novo Parceiro</strong>
+        </header>
+        <Content>
+          <WrapperImg>
+            <PickerImage name="banner" />
+            <LabelWrapper>
+              <div>
+                <strong>JPEG,JPG</strong>
+                <strong>ou PNG</strong>
+              </div>
+              <span>
+                <strong>Máximo</strong>
+                <strong>de 2Mb</strong>
+              </span>
+            </LabelWrapper>
+          </WrapperImg>
 
-            <WrapperImg>
-              <PickerImage name="banner" />
-              <LabelWrapper>
-                <div>
-                  <strong>JPEG,JPG</strong>
-                  <strong>ou PNG</strong>
-                </div>
-                <span>
-                  <strong>Máximo</strong>
-                  <strong>de 2Mb</strong>
-                </span>
-              </LabelWrapper>
-            </WrapperImg>
-          </Content>
+          <WrapperImg>
+            <PickerImage name="banner" />
+            <LabelWrapper>
+              <div>
+                <strong>JPEG,JPG</strong>
+                <strong>ou PNG</strong>
+              </div>
+              <span>
+                <strong>Máximo</strong>
+                <strong>de 2Mb</strong>
+              </span>
+            </LabelWrapper>
+          </WrapperImg>
+        </Content>
 
-          <Content>
-            <div>
-              <Input label="Nome do Patrocinador" width="420px" />
-            </div>
-            <div className="inputs">
-              <Input label="Descrição" width="420px" height="120px" />
-            </div>
-            <div className="inputs">
-              <Input label="Link do Vídeo" width="420px" />
-              <a href="/events/new/partners">
-                Como adicionar vídeo no YouTube?
-              </a>
-            </div>
-            <WrapperSelect>
-              <Select
-                width="288px"
-                onChange={() => setChecked(!checked)}
-                options={[
-                  {
-                    options: [
-                      { value: '4', label: 'Value 041231121' },
-                      { value: '5', label: '05' },
-                      { value: '6', label: '06' },
-                    ],
-                  },
-                ]}
-                optionsListHeight="200px"
-                iconColor="#fe324b"
-              />
+        <Content>
+          <div>
+            <Input label="Nome do Patrocinador" width="420px" />
+          </div>
+          <div className="inputs">
+            <Input label="Descrição" width="420px" height="120px" />
+          </div>
+          <div className="inputs">
+            <Input label="Site" width="420px" />
+          </div>
 
-              <Checkbox
-                name="expositor"
-                label="Expositor"
-                customStyles={{
-                  padding: ' 0 40px',
-                }}
-                checked={checked}
-                onChange={() => setChecked(!checked)}
-              />
-            </WrapperSelect>
-            <WrapperButtonPartner>
-              <Button>
-                <strong>Salvar Parceiro</strong>
-              </Button>
-            </WrapperButtonPartner>
-          </Content>
-        </NewPartner>
+          <div className="inputs">
+            <Input label="Link do Vídeo" width="420px" />
+            <a href="/events/new/partners">Como adicionar vídeo no YouTube?</a>
+          </div>
+          <WrapperSelect>
+            <Select
+              width="288px"
+              onChange={() => setChecked(!checked)}
+              options={[
+                {
+                  options: [
+                    { value: '4', label: 'Value 041231121' },
+                    { value: '5', label: '05' },
+                    { value: '6', label: '06' },
+                  ],
+                },
+              ]}
+              optionsListHeight="200px"
+              iconColor="#fe324b"
+            />
 
-        <SponsorClass>
-          <header>
-            <strong>Classe dos Patrocinadores</strong>
-          </header>
-
-          <WrapperSponsors>
-            <h1>1º</h1>
-            <Input width="335px" />
-          </WrapperSponsors>
-
-          <WrapperSponsors>
-            <h1>2º</h1>
-            <Input width="335px" />
-          </WrapperSponsors>
-
-          <WrapperSponsors>
-            <h1>3º</h1>
-            <Input width="335px" />
-          </WrapperSponsors>
-
-          <WrapperButtonClass>
-            <Button type="button">
-              <img src={add} alt="" />
-              <strong>Adicionar Classe</strong>
+            <Checkbox
+              name="expositor"
+              label="Expositor"
+              customStyles={{
+                padding: ' 0 40px',
+              }}
+              checked={checked}
+              onChange={() => setChecked(!checked)}
+            />
+          </WrapperSelect>
+          <WrapperButtonPartner>
+            <Button>
+              <strong>Salvar Parceiro</strong>
             </Button>
-          </WrapperButtonClass>
-        </SponsorClass>
-      </Container>
+          </WrapperButtonPartner>
+        </Content>
+      </NewPartner>
+      {sponsors.map((sponsor, index) => (
+        <SponsorCategory
+          key={index}
+          addNewSponsor={actions.sponsors.addNewSponsor}
+          editSponsor={({ label, value }) =>
+            actions.sponsors.editSponsor({ index, label, value })
+          }
+          sponsor={sponsor}
+        />
+      ))}
+      ), [sponsors, actions.sponsors]
       <WrapperRegisters>
         <header>
           <strong>Classe dos Patrocinadores</strong>
@@ -227,6 +212,6 @@ export default function Partners() {
           </Table>
         </TableWrapper>
       </WrapperRegisters>
-    </>
+    </Container>
   );
 }

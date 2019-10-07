@@ -2,8 +2,6 @@ import React from 'react';
 
 import withEvent from '../../containers/Event';
 
-import Header from '../../components/Header';
-import SubHeader from '../../components/SubHeader';
 import TabPanel from '../../components/TabPanel';
 import Footer from '../../components/Container/Footer';
 
@@ -51,9 +49,7 @@ function EventManagement(props) {
 
   return (
     <EventProvider>
-      <Header />
       <Container>
-        <SubHeader />
         <TabPanel links={links} />
         <WrapperBox>
           <Tabs />

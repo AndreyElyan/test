@@ -40,6 +40,7 @@ export default function PickerImage() {
           fontSize="13px"
           backgroundColor="#f9f9f9"
           image={preview}
+          emptyText="Sem Foto"
         />
 
         <input

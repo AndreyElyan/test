@@ -7,11 +7,10 @@ export function signInRequest(email, password) {
   };
 }
 
-export function signInSucces(bearer) {
+export function signInSucces(payload) {
   return {
-    type: '@auth/SIGN_IN_SUCCES',
-    token: { bearer },
-    signedIn: true,
+    type: Types.SIGN_REQUEST_SUCESS,
+    payload,
   };
 }
 

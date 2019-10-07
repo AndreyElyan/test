@@ -1,8 +1,9 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Select from '4all-ui/components/Select';
 
 import api from '../../../../services/api';
+import { error } from '../../../../services/notifier';
 
 import add from '../../../../assets/button/add.svg';
 import CalendarIcon from '../../../../components/Icons/Calendar';
@@ -46,14 +47,15 @@ const COLORS = [
   { value: '#e8eaed', border: false },
 ];
 
-function EventsRegister() {
+function EventsRegister({ match }) {
+  const { id } = match.params;
   const [isOpenCalendar, setOpenCalendar] = useState(false);
   const [isOpenColors, setOpenColor] = useState(false);
 
   const { state, actions } = useEvent();
   const { events } = state;
-  const { events: eventsActions } = actions;
 
+  const { events: eventsActions, setContext } = actions;
   const handleOpenCalendar = useCallback(() => {
     if (!isOpenCalendar) setOpenCalendar(true);
   }, [isOpenCalendar]);
@@ -78,20 +80,46 @@ function EventsRegister() {
     [isOpenColors]
   );
 
-  const handleChangeDates = useCallback(dates => {
-    const ordersDates = dates.sort((a, b) => {
-      return new Date(a).valueOf() - new Date(b).valueOf();
-    });
+  const handleChangeDates = useCallback(
+    dates => {
+      const ordersDates = dates.sort((a, b) => {
+        return new Date(a).valueOf() - new Date(b).valueOf();
+      });
 
-    eventsActions.setDays(ordersDates);
-  }, []);
+      eventsActions.setDays(ordersDates);
+    },
+    [eventsActions]
+  );
 
   const dates = events.days
-    .map(date => {
-      const dateObject = new Date(date);
-      return `${dateObject.getDate()}/${dateObject.getMonth() + 1}`;
-    })
-    .join(', ');
+    ? events.days
+        .map(date => {
+          const dateObject = new Date(date);
+          return `${dateObject.getDate()}/${dateObject.getMonth() + 1}`;
+        })
+        .join(', ')
+    : null;
+
+  const getEvent = async () => {
+    const { data } = await api.get(`/event/${id}`);
+    setContext({ tab: 'events', value: data });
+  };
+
+  useEffect(() => {
+    getEvent();
+  }, []);
+
+  const setTrails = async (titleTrail, colorTrail) => {
+    try {
+      await api.put(`track?eventId=${id}`, {
+        id: `${id}`,
+        title: titleTrail,
+        color: colorTrail,
+      });
+    } catch (err) {
+      error('Falha ao guardar os dados');
+    }
+  };
 
   return (
     <Container>
