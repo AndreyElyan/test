@@ -42,7 +42,7 @@ export default function Speaker({ match }) {
 
   const { state, actions } = useEvent();
   const { speakers } = state;
-  const { speakers: speakersActions } = actions;
+  const { speakers: speakersActions, setContext } = actions;
 
   const submitForm = useCallback(event => {
     if (event) event.preventDefault();
@@ -82,6 +82,22 @@ export default function Speaker({ match }) {
       error('Não foi possível guardar os dados');
     }
   };
+
+  const getSpeaker = async () => {
+    const { data: dataSpeaker } = await api.get(`/person?eventId=${id}`);
+
+    setContext({
+      tab: 'events',
+      value: {
+        ...speakers,
+        ...dataSpeaker,
+      },
+    });
+  };
+
+  useEffect(() => {
+    getSpeaker();
+  }, []);
 
   return (
     <Container>
@@ -178,23 +194,18 @@ export default function Speaker({ match }) {
                 </button>
               </Column>
             </HeaderTable>
-            {list &&
-              list.length > 0 &&
-              list.map(element => (
-                <div key={element.id}>
-                  <Row>
-                    <Column width="45%">
-                      <p>{element.name}</p>
-                    </Column>
-                    <Column width="50%">
-                      <p>{element.description}</p>
-                    </Column>
-                    <Column width="35%">
-                      <p>{element.linkedin}</p>
-                    </Column>
-                  </Row>
-                </div>
-              ))}
+
+            <Row>
+              <Column width="45%">
+                <p>{speakers.name}</p>
+              </Column>
+              <Column width="50%">
+                <p>{speakers.description}</p>
+              </Column>
+              <Column width="35%">
+                <p>{speakers.linkedin}</p>
+              </Column>
+            </Row>
           </Table>
         </TableWrapper>
       </ListSpeakers>
