@@ -202,6 +202,7 @@ export const Anchor = styled.div`
   margin-top: 10px;
   opacity: 0.8;
   strong {
+    opacity: 0;
     color: #4a90e2;
     margin-top: 15px;
     font-size: 13px;

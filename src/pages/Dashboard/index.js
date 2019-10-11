@@ -47,6 +47,10 @@ export default function Dashboard({ history }) {
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
 
+  const active = '#418b37';
+  const inactive = '#d34848';
+  const beta = '#333333';
+
   const redirectToEvent = idEvent => {
     history.push(`/events/${idEvent}`);
   };
@@ -172,6 +176,30 @@ export default function Dashboard({ history }) {
                     ? transformDate(element.days[0])
                     : null;
 
+                  const status = () => {
+                    if (element.status === 'ACTIVE') {
+                      return active;
+                    }
+                    if (element.status === 'INACTIVE') {
+                      return inactive;
+                    }
+                    if (element.status === 'BETA') {
+                      return beta;
+                    }
+                  };
+
+                  const titleStatus = pStatus => {
+                    if (pStatus === 'ACTIVE') {
+                      return 'Ativo';
+                    }
+                    if (pStatus === 'INACTIVE') {
+                      return 'Inativo';
+                    }
+                    if (pStatus === 'BETA') {
+                      return 'Beta';
+                    }
+                  };
+
                   return (
                     <div
                       key={element.id}
@@ -188,10 +216,10 @@ export default function Dashboard({ history }) {
                         <Column width="10%">
                           <Tag
                             bgColor="#FFFFFF"
-                            color="#d34848"
+                            color={status}
                             border="1px solid #E4E4E4"
                           >
-                            {element.status}
+                            {titleStatus(element.status)}
                           </Tag>
                         </Column>
                       </Row>

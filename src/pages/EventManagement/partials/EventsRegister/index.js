@@ -1,9 +1,8 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, memo } from 'react';
 import Select from '4all-ui/components/Select';
 
 import api from '../../../../services/api';
-import { error } from '../../../../services/notifier';
 
 import add from '../../../../assets/button/add.svg';
 import CalendarIcon from '../../../../components/Icons/Calendar';
@@ -45,6 +44,12 @@ const COLORS = [
   { value: '#f7cee7', border: false },
   { value: '#e6c9a8', border: false },
   { value: '#e8eaed', border: false },
+];
+
+const options = [
+  { value: 'BETA', label: 'Beta' },
+  { value: 'ACTIVE', label: 'Ativo' },
+  { value: 'INACTIVE', label: 'Inativo' },
 ];
 
 function EventsRegister({ match }) {
@@ -101,25 +106,30 @@ function EventsRegister({ match }) {
     : null;
 
   const getEvent = async () => {
-    const { data } = await api.get(`/event/${id}`);
-    setContext({ tab: 'events', value: data });
+    const { data: dataEvent } = await api.get(`/event/${id}`);
+    const { data: dataTrails } = await api.get(`/track/?eventId=${id}`);
+
+    // eslint-disable-next-line prefer-destructuring
+    if (dataTrails[0]) dataEvent.trails = dataTrails[0];
+
+    setContext({
+      tab: 'events',
+      value: {
+        ...events,
+        ...dataEvent,
+      },
+    });
   };
 
   useEffect(() => {
     getEvent();
   }, []);
 
-  const setTrails = async (titleTrail, colorTrail) => {
-    try {
-      await api.put(`track?eventId=${id}`, {
-        id: `${id}`,
-        title: titleTrail,
-        color: colorTrail,
-      });
-    } catch (err) {
-      error('Falha ao guardar os dados');
-    }
-  };
+  const statusSelected = events.status.value
+    ? events.status
+    : options.find(status => status.value === events.status);
+
+  const { title: titleTrails, color } = events.trails;
 
   return (
     <Container>
@@ -166,11 +176,7 @@ function EventsRegister({ match }) {
               options={[
                 {
                   label: 'Status',
-                  options: [
-                    { value: 'BETA', label: 'Beta' },
-                    { value: 'ACTIVE', label: 'Ativo' },
-                    { value: 'INACTIVE', label: 'Inativo' },
-                  ],
+                  options,
                 },
               ]}
               optionsListHeight="100px"
@@ -178,7 +184,7 @@ function EventsRegister({ match }) {
               width="340px"
               height="45px"
               onChange={eventsActions.setStatus}
-              value={events.status}
+              value={statusSelected}
             />
           </WrapperAbove>
 
@@ -190,9 +196,9 @@ function EventsRegister({ match }) {
               width="340px"
               type="text"
               description="Adicione uma trilha e escolha a cor de identificação"
-              background={events.trails}
-              onChange={eventsActions.setTitleColor}
-              value={events.titleColor}
+              background={color}
+              onChange={eventsActions.setTitleTrails}
+              value={titleTrails}
             />
 
             <ButtonStyle type="button" onClick={handleOpenColors}>
@@ -200,12 +206,12 @@ function EventsRegister({ match }) {
               <strong>Adicionar Trilha</strong>
               <Overlay onClick={handleCloseColors} isOpen={isOpenColors} />
               <WrapperColors onClick={handleCloseColors} isOpen={isOpenColors}>
-                {COLORS.map((color, index) => (
+                {COLORS.map((colorObject, index) => (
                   <LabelColor
-                    key={`${index}-${color.value}`}
-                    color={color.value}
-                    border={color.border}
-                    onClick={() => eventsActions.setColor(color.value)}
+                    key={`${index}-${colorObject.value}`}
+                    color={colorObject.value}
+                    border={colorObject.border}
+                    onClick={() => eventsActions.setColor(colorObject.value)}
                   />
                 ))}
               </WrapperColors>
@@ -213,9 +219,9 @@ function EventsRegister({ match }) {
           </WrapperTrails>
         </Content>
       </WrapperEvents>
-      <SectionTags />
+      <SectionTags eventId={id} />
     </Container>
   );
 }
 
-export default EventsRegister;
+export default memo(EventsRegister);

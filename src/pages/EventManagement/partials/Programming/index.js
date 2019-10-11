@@ -57,8 +57,6 @@ export default class Programming extends Component {
     if (isOpenCalendar) this.setState({ isOpenCalendar: false });
   };
 
-  handleSetDate = dates => {};
-
   submitForm = event => {
     if (event) event.preventDefault();
   };

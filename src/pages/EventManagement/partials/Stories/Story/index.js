@@ -1,4 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
+import image2base64 from 'image-to-base64';
+
+import api from '../../../../../services/api';
 
 import PickerImage from '../../../../../components/Picker/Image';
 
@@ -17,14 +20,74 @@ import {
   ButtonDelete,
 } from './styles';
 
-function Story({ isLast, story, addNewStory, deleteStory, editStory }) {
+function Story({
+  eventId,
+  isLast,
+  story,
+  addNewStory,
+  deleteStory,
+  editStory,
+}) {
+  const [preview, setPreview] = useState('');
+
+  async function handleChangeImage(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imagePreview = URL.createObjectURL(file);
+      setPreview(imagePreview);
+
+      const image = await image2base64(imagePreview);
+      editStory({ label: 'image', value: image });
+    }
+  }
+
+  const submitAddStory = async () => {
+    await api.post(`/story?eventId=${eventId}`, {
+      contents: [
+        {
+          texts: [
+            {
+              text: story.colorWhite,
+              color: 'white',
+              style: 'bold',
+            },
+            {
+              text: story.colorPink,
+              color: 'pink',
+              style: 'regular',
+            },
+          ],
+          banner: `data:image/png;base64,${story.image}`,
+        },
+      ],
+    });
+  };
+
+  const addStories = () => {
+    if (!story.id) submitAddStory();
+    addNewStory();
+  };
+
+  const submitDeleteStory = async () => {
+    await api.delete(`/story/${story.id}/?eventId=${eventId}`);
+  };
+
+  const handleDeleteStory = () => {
+    submitDeleteStory();
+    deleteStory();
+  };
+
   return (
     <WrapperStories>
       <header>
         <strong>Stories</strong>
       </header>
       <WrapperImage>
-        <PickerImage />
+        <PickerImage
+          handleChange={handleChangeImage}
+          preview={preview || story.image}
+        />
         <LabelWrapper>
           <div>
             <strong>JPEG,JPG</strong>
@@ -57,12 +120,12 @@ function Story({ isLast, story, addNewStory, deleteStory, editStory }) {
 
         <WrapperButton>
           {isLast ? (
-            <ButtonAdd onClick={addNewStory}>
+            <ButtonAdd onClick={addStories}>
               <img src={Add} height={30} alt="add" />
               <strong>Mais stories</strong>
             </ButtonAdd>
           ) : (
-            <ButtonDelete onClick={deleteStory}>
+            <ButtonDelete onClick={handleDeleteStory}>
               <img src={trash} height={30} alt="add" />
               <strong>Apagar Stories</strong>
             </ButtonDelete>

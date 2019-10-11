@@ -25,12 +25,7 @@ function SponsorCategory({
 
       <WrapperSponsors>
         <h1>1º</h1>
-        <Input
-          width="335px"
-          value={sponsor.name}
-          onChange={value => editSponsor({ label: 'name', value })}
-          onSubmit={addNewSponsor}
-        />
+        <Input width="335px" />
       </WrapperSponsors>
 
       <WrapperButtonClass>

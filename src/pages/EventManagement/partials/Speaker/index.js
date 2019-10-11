@@ -34,7 +34,8 @@ import {
   Button,
 } from './styles';
 
-export default function Speaker() {
+export default function Speaker({ match }) {
+  const { id } = match.params;
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [order] = useState(null);
@@ -53,13 +54,11 @@ export default function Speaker() {
     setLoading(true);
 
     try {
-      const { data } = await api.get(
-        `/person?eventId=5d5dafda81ca861b5bf038dc&itemsPerPage=1&currentPage=`
-      );
+      const { data } = await api.get(`/person?eventId=${id}`);
 
       setList(data);
     } catch (err) {
-      error('Não foi possível recuperar os dados!');
+      error('Não foi encontrado');
     } finally {
       setLoading(false);
     }
@@ -68,6 +67,21 @@ export default function Speaker() {
   useEffect(() => {
     getList();
   }, [order]);
+
+  const newSpeaker = async () => {
+    try {
+      const { data } = api.post(`/person?eventId=${id}`, {
+        name: speakers.name,
+        description: speakers.description,
+        profileImage: '',
+        linkedin: speakers.linkedin,
+      });
+
+      return data;
+    } catch (err) {
+      error('Não foi possível guardar os dados');
+    }
+  };
 
   return (
     <Container>
@@ -122,7 +136,7 @@ export default function Speaker() {
           </WrapperDescription>
 
           <WrapperButton>
-            <Button type="button">
+            <Button onClick={newSpeaker} type="button">
               <img src={add} alt="add" />
               <strong>Salvar Palestrante</strong>
             </Button>
@@ -170,13 +184,13 @@ export default function Speaker() {
                 <div key={element.id}>
                   <Row>
                     <Column width="45%">
-                      <p>{element.people}</p>
+                      <p>{element.name}</p>
                     </Column>
                     <Column width="50%">
-                      <p>Desenvolvedor React</p>
+                      <p>{element.description}</p>
                     </Column>
                     <Column width="35%">
-                      <p>linkedin.com/andreyelyan</p>
+                      <p>{element.linkedin}</p>
                     </Column>
                   </Row>
                 </div>

@@ -5,6 +5,8 @@ import Checkbox from '4all-ui/components/Checkbox';
 import api from '../../../../services/api';
 import { error } from '../../../../services/notifier';
 
+import { useEvent } from '../../Context/index';
+
 import Search from '../../../../components/Icons/Search';
 import PickerImage from '../../../../components/Picker/Image';
 import Input from '../../../../components/Input';
@@ -14,8 +16,6 @@ import {
   Column,
   Row,
 } from '../../../../components/Table';
-
-import { useEvent } from '../../Context';
 
 import SponsorCategory from './SponsorCategory';
 
@@ -34,14 +34,26 @@ import {
   WrapperButtonPartner,
 } from './styles';
 
-export default function Partners() {
+export default function Partners({ match }) {
+  const { id } = match.params;
   const [checked, setChecked] = useState(true);
   const [order] = useState(null);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const { state, actions } = useEvent();
-  const { sponsors } = state;
+  const { partners } = state;
+
+  const { partners: partnersActions, setContext } = actions;
+
+  const getPartner = async () => {
+    const { data } = await api.get(`/partner/${id}`);
+    setContext({ tab: 'events', value: data });
+  };
+
+  useEffect(() => {
+    getPartner();
+  }, []);
 
   const getList = async () => {
     if (loading) return null;
@@ -55,7 +67,7 @@ export default function Partners() {
 
       setList(data);
     } catch (err) {
-      error('Não foi possível recuperar os dados!');
+      error(err);
     } finally {
       setLoading(false);
     }
@@ -69,101 +81,118 @@ export default function Partners() {
     if (event) event.preventDefault();
   }
   return (
-    <Container>
-      <NewPartner>
-        <header>
-          <strong>Novo Parceiro</strong>
-        </header>
-        <Content>
-          <WrapperImg>
-            <PickerImage name="banner" />
-            <LabelWrapper>
-              <div>
-                <strong>JPEG,JPG</strong>
-                <strong>ou PNG</strong>
-              </div>
-              <span>
-                <strong>Máximo</strong>
-                <strong>de 2Mb</strong>
-              </span>
-            </LabelWrapper>
-          </WrapperImg>
+    <>
+      <Container>
+        <NewPartner>
+          <header>
+            <strong>Novo Parceiro</strong>
+          </header>
+          <Content>
+            <WrapperImg>
+              <PickerImage name="banner" />
+              <LabelWrapper>
+                <div>
+                  <strong>JPEG,JPG</strong>
+                  <strong>ou PNG</strong>
+                </div>
+                <span>
+                  <strong>Máximo</strong>
+                  <strong>de 2Mb</strong>
+                </span>
+              </LabelWrapper>
+            </WrapperImg>
 
-          <WrapperImg>
-            <PickerImage name="banner" />
-            <LabelWrapper>
-              <div>
-                <strong>JPEG,JPG</strong>
-                <strong>ou PNG</strong>
-              </div>
-              <span>
-                <strong>Máximo</strong>
-                <strong>de 2Mb</strong>
-              </span>
-            </LabelWrapper>
-          </WrapperImg>
-        </Content>
+            <WrapperImg>
+              <PickerImage name="banner" />
+              <LabelWrapper>
+                <div>
+                  <strong>JPEG,JPG</strong>
+                  <strong>ou PNG</strong>
+                </div>
+                <span>
+                  <strong>Máximo</strong>
+                  <strong>de 2Mb</strong>
+                </span>
+              </LabelWrapper>
+            </WrapperImg>
+          </Content>
 
-        <Content>
-          <div>
-            <Input label="Nome do Patrocinador" width="420px" />
-          </div>
-          <div className="inputs">
-            <Input label="Descrição" width="420px" height="120px" />
-          </div>
-          <div className="inputs">
-            <Input label="Site" width="420px" />
-          </div>
+          <Content>
+            <div>
+              <Input
+                onChange={partnersActions.setName}
+                value={partners.name}
+                label="Nome do Patrocinador"
+                width="420px"
+              />
+            </div>
+            <div className="inputs">
+              <Input
+                onChange={partnersActions.setDescription}
+                value={partners.description}
+                label="Descrição"
+                width="420px"
+                height="120px"
+              />
+            </div>
+            <div className="inputs">
+              <Input
+                onChange={partnersActions.setSiteUrl}
+                value={partners.siteUrl}
+                label="Site"
+                width="420px"
+              />
+            </div>
 
-          <div className="inputs">
-            <Input label="Link do Vídeo" width="420px" />
-            <a href="/events/new/partners">Como adicionar vídeo no YouTube?</a>
-          </div>
-          <WrapperSelect>
-            <Select
-              width="288px"
-              onChange={() => setChecked(!checked)}
-              options={[
-                {
-                  options: [
-                    { value: '4', label: 'Value 041231121' },
-                    { value: '5', label: '05' },
-                    { value: '6', label: '06' },
-                  ],
-                },
-              ]}
-              optionsListHeight="200px"
-              iconColor="#fe324b"
-            />
+            <div className="inputs">
+              <Input
+                onChange={partnersActions.setVideoUrl}
+                value={partners.videoUrl}
+                label="Link do Vídeo"
+                width="420px"
+              />
+              <a href="/events/new/partners">
+                Como adicionar vídeo no YouTube?
+              </a>
+            </div>
+            <WrapperSelect>
+              <Select
+                width="288px"
+                options={[
+                  {
+                    options: [
+                      { value: '4', label: 'Value 041231121' },
+                      { value: '5', label: '05' },
+                      { value: '6', label: '06' },
+                    ],
+                  },
+                ]}
+                optionsListHeight="200px"
+                iconColor="#fe324b"
+                onChange={partnersActions.setSponsorCategoryId}
+                value={partners.sponsorCategoryId}
+              />
 
-            <Checkbox
-              name="expositor"
-              label="Expositor"
-              customStyles={{
-                padding: ' 0 40px',
-              }}
-              checked={checked}
-              onChange={() => setChecked(!checked)}
-            />
-          </WrapperSelect>
-          <WrapperButtonPartner>
-            <Button>
-              <strong>Salvar Parceiro</strong>
-            </Button>
-          </WrapperButtonPartner>
-        </Content>
-      </NewPartner>
-      {sponsors.map((sponsor, index) => (
-        <SponsorCategory
-          key={index}
-          addNewSponsor={actions.sponsors.addNewSponsor}
-          editSponsor={({ label, value }) =>
-            actions.sponsors.editSponsor({ index, label, value })
-          }
-          sponsor={sponsor}
-        />
-      ))}
-      ), [sponsors, actions.sponsors]
+              <Checkbox
+                name="expositor"
+                label="Expositor"
+                customStyles={{
+                  padding: ' 0 40px',
+                }}
+                checked={checked}
+                onChange={() => setChecked(!checked)}
+              />
+            </WrapperSelect>
+            <WrapperButtonPartner>
+              <Button>
+                <strong>Salvar Parceiro</strong>
+              </Button>
+            </WrapperButtonPartner>
+          </Content>
+        </NewPartner>
+
+        <SponsorCategory />
+      </Container>
       <WrapperRegisters>
         <header>
           <strong>Classe dos Patrocinadores</strong>
@@ -212,6 +241,6 @@ export default function Partners() {
           </Table>
         </TableWrapper>
       </WrapperRegisters>
-    </Container>
+    </>
   );
 }

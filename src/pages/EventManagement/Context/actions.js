@@ -14,11 +14,13 @@ const DEFAULT_BANNER = [
   },
 ];
 
+const DEFAULTS_TRAILS = { color: '', title: '' };
+
 const DEFATULT_EVENTS = {
   title: '',
   days: [],
   status: '',
-  trails: '',
+  trails: DEFAULTS_TRAILS,
   tags: [],
 };
 
@@ -145,19 +147,25 @@ export const eventsActions = (state, setState) => ({
     setState({ tab: 'events', value: events });
   },
 
-  setColor: trails => {
+  setColor: color => {
     const events = {
       ...state.events,
-      trails,
+      trails: {
+        ...state.events.trails,
+        color,
+      },
     };
 
     setState({ tab: 'events', value: events });
   },
 
-  setTitleColor: titleColor => {
+  setTitleTrails: title => {
     const events = {
       ...state.events,
-      titleColor,
+      trails: {
+        ...state.events.trails,
+        title,
+      },
     };
 
     setState({ tab: 'events', value: events });

@@ -6,7 +6,6 @@ import PrivateRoute from './PrivateRoute';
 
 import SignIn from '../pages/SignIn';
 import NewPassword from '../pages/NewPassword';
-// import ForgotPassword from '../pages/ForgotPassword';
 
 import Dashboard from '../pages/Dashboard';
 import EventManagement from '../pages/EventManagement';

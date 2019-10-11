@@ -3,7 +3,7 @@ import React from 'react';
 import withEvent from '../../containers/Event';
 
 import TabPanel from '../../components/TabPanel';
-import Footer from '../../components/Container/Footer';
+import Footer from './partials/Footer';
 
 import EventProvider from './Context';
 

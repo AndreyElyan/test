@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Tag from '4all-ui/components/Tag';
+
+import api from '../../../../../../services/api';
 
 import { useEvent } from '../../../../Context/index';
 
@@ -8,25 +10,38 @@ import Input from '../../../../../../components/Input';
 
 import { WrapperTags, WrapperInterest, ContentTags } from './styles';
 
-const SectionTags = () => {
+const SectionTags = ({ eventId }) => {
   const [inputTags, setInputTags] = useState('');
   const [tags, setTags] = useState([]);
 
-  const submitAddTag = event => {
+  const getTags = async () => {
+    const { data } = await api.get(`/interest?eventId=${eventId}`);
+    setTags(data);
+  };
+
+  useEffect(() => {
+    getTags();
+  }, [eventId]);
+
+  const submitAddTag = async event => {
     if (event) event.preventDefault();
 
     if (inputTags.trim() === '') return false;
 
-    if (!tags.find(tag => tag.label === inputTags)) {
-      tags.push({ label: inputTags });
+    if (!tags.find(tag => tag.title === inputTags)) {
+      tags.push({ title: inputTags });
       setTags(tags);
+
+      await api.post(`/interest?eventId=${eventId}`, { title: inputTags });
     }
 
     setInputTags('');
   };
 
-  const removeTag = index => {
+  const removeTag = async index => {
+    const tag = tags[index];
     setTags(tags.filter((tag, tagIndex) => tagIndex !== index));
+    await api.delete(`/interest/${tag.id}?eventId=${eventId}`);
   };
 
   const { state, actions } = useEvent();
@@ -59,11 +74,11 @@ const SectionTags = () => {
             border="1px solid #E4E4E4"
             onRemoveTag={() => removeTag(index)}
             iconColor="#979797"
-            key={`${tag.label}-${index}`}
+            key={`${tag.title}-${index}`}
             onChange={eventsActions.setTags}
             value={events.tags}
           >
-            {tag.label}
+            {tag.title}
           </Tag>
         ))}
       </ContentTags>
