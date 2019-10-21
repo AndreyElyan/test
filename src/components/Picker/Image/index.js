@@ -1,13 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { useField } from '@rocketseat/unform';
 import ProductImage from '4all-ui/components/ProductImage';
 
 import { Container } from './styles';
 
-export default function PickerImage({ handleChange, preview }) {
+export default function PickerImage({
+  handleChange,
+  preview,
+  id = new Date().valueOf(),
+}) {
+  const forInput = `avatar-${id}`;
+
   return (
     <Container>
-      <label htmlFor="avatar">
+      <label htmlFor={forInput}>
         <ProductImage
           size="150px"
           iconSize="50px"
@@ -19,7 +25,7 @@ export default function PickerImage({ handleChange, preview }) {
 
         <input
           type="file"
-          id="avatar"
+          id={forInput}
           accept="image/*"
           onChange={handleChange}
         />

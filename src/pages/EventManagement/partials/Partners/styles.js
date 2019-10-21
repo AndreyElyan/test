@@ -77,6 +77,13 @@ export const WrapperImg = styled.div`
   width: fit-content;
   height: fit-content;
   padding-bottom: 65px;
+  margin-top: 10px;
+
+  strong {
+    padding-bottom: 10px;
+    color: #a0a0a0;
+    margin-right: 100px;
+  }
 `;
 
 export const LabelWrapper = styled.div`

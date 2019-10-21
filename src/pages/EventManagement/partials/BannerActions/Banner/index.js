@@ -1,7 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
+import image2base64 from 'image-to-base64';
+
+import api from '../../../../../services/api';
+import { error } from '../../../../../services/notifier';
+
+import PickerImage from '../../../../../components/Picker/Image';
 
 import Input from '../../../../../components/Input';
-import PickerImage from '../../../../../components/Picker/Image';
 
 import Add from '../add.svg';
 import trash from '../../../../../assets/button/trash.svg';
@@ -16,14 +21,69 @@ import {
   ButtonDelete,
 } from './styles';
 
-function Banner({ isLast, banner, addNewBanner, deleteBanner, editBanner }) {
+function Banner({
+  eventId,
+  isLast,
+  banner,
+  addNewBanner,
+  deleteBanner,
+  editBanner,
+}) {
+  const [preview, setPreview] = useState('');
+
+  async function handleChangeImage(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imagePreview = URL.createObjectURL(file);
+      setPreview(imagePreview);
+
+      const image = await image2base64(imagePreview);
+      editBanner({ label: 'image', value: image });
+    }
+  }
+
+  const submitAddBanner = async () => {
+    const { data } = await api.get(`/banner?eventId=${eventId}`);
+
+    if (data.length < 3) {
+      await api.post(`/banner?eventId=${eventId}`, {
+        image: `data:image/png;base64,${banner.image}`,
+
+        title: banner.title,
+        subtitle: banner.subtitle,
+        actionType: 'SPONSORS',
+      });
+    } else {
+      error('Limite de três banners por evento.');
+    }
+  };
+
+  const addBanners = () => {
+    if (!banner.id) submitAddBanner();
+    addNewBanner();
+  };
+
+  const submitDeleteBanner = async () => {
+    await api.delete(`/banner/${banner.id}/?eventId=${eventId}`);
+  };
+
+  const handleDeleteBanner = () => {
+    submitDeleteBanner();
+    deleteBanner();
+  };
+
   return (
     <WrapperStories>
       <header>
-        <strong>Stories</strong>
+        <strong>Banners</strong>
       </header>
       <WrapperImage>
-        <PickerImage />
+        <PickerImage
+          handleChange={handleChangeImage}
+          preview={preview || banner.image}
+          id={banner.id}
+        />
         <LabelWrapper>
           <div>
             <strong>JPEG,JPG</strong>
@@ -37,6 +97,7 @@ function Banner({ isLast, banner, addNewBanner, deleteBanner, editBanner }) {
       </WrapperImage>
       <WrapperText>
         <Input
+          className="title"
           height="45px"
           width="850px"
           label="Título"
@@ -45,21 +106,22 @@ function Banner({ isLast, banner, addNewBanner, deleteBanner, editBanner }) {
         />
 
         <Input
+          className="pinkColorAdd"
           height="45px"
           width="850px"
-          label="Sub Título"
-          value={banner.subTitle}
-          onChange={value => editBanner({ label: 'subTitle', value })}
+          label="Cor Rosa"
+          value={banner.subtitle}
+          onChange={value => editBanner({ label: 'subtitle', value })}
         />
 
         <WrapperButton>
           {isLast ? (
-            <ButtonAdd onClick={addNewBanner}>
+            <ButtonAdd onClick={addBanners}>
               <img src={Add} height={30} alt="add" />
               <strong>Mais stories</strong>
             </ButtonAdd>
           ) : (
-            <ButtonDelete onClick={deleteBanner}>
+            <ButtonDelete onClick={handleDeleteBanner}>
               <img src={trash} height={30} alt="add" />
               <strong>Apagar Stories</strong>
             </ButtonDelete>

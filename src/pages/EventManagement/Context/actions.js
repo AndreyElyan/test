@@ -14,7 +14,11 @@ const DEFAULT_BANNER = [
   },
 ];
 
-const DEFAULTS_TRAILS = { color: '', title: '' };
+export const DEFAULTS_TRAILS = [
+  { color: '#ffffff', title: '', isOpenColors: false },
+  { color: '#ffffff', title: '', isOpenColors: false },
+  { color: '#ffffff', title: '', isOpenColors: false },
+];
 
 const DEFATULT_EVENTS = {
   title: '',
@@ -37,7 +41,9 @@ const DEFAULT_PROGRAMMING = {
   startTime: '',
   endTime: '',
   description: '',
-  personCategories: '',
+  speakerCategoryId: [],
+  mediatorCategoryId: [],
+  personCategories: [],
   trackId: '',
   categoryId: '',
   image: '',
@@ -71,7 +77,7 @@ export const INITIAL_STATE = {
 
 export const storiesActions = (state, setState) => ({
   addNewStory: () => {
-    const stories = [...state.stories, DEFAULT_STORY];
+    const stories = [...state.stories, DEFAULT_STORY[0]];
     setState({ tab: 'stories', value: stories });
   },
   deleteStory: indexStory => {
@@ -147,25 +153,56 @@ export const eventsActions = (state, setState) => ({
     setState({ tab: 'events', value: events });
   },
 
-  setColor: color => {
+  setColor: ({ value, index }) => {
     const events = {
       ...state.events,
-      trails: {
-        ...state.events.trails,
-        color,
-      },
+      trails: state.events.trails.map((trail, indexTrail) => {
+        if (indexTrail !== index) {
+          return trail;
+        }
+
+        return {
+          ...trail,
+          color: value,
+          isOpenColors: false,
+        };
+      }),
     };
 
     setState({ tab: 'events', value: events });
   },
 
-  setTitleTrails: title => {
+  toggleIsOpenColors: ({ value, index }) => {
     const events = {
       ...state.events,
-      trails: {
-        ...state.events.trails,
-        title,
-      },
+      trails: state.events.trails.map((trail, indexTrail) => {
+        if (indexTrail !== index) {
+          return trail;
+        }
+
+        return {
+          ...trail,
+          isOpenColors: value,
+        };
+      }),
+    };
+
+    setState({ tab: 'events', value: events });
+  },
+
+  setTitleTrails: ({ value, index }) => {
+    const events = {
+      ...state.events,
+      trails: state.events.trails.map((trail, indexTrail) => {
+        if (indexTrail !== index) {
+          return trail;
+        }
+
+        return {
+          ...trail,
+          title: value,
+        };
+      }),
     };
 
     setState({ tab: 'events', value: events });
@@ -238,6 +275,15 @@ export const programmingActions = (state, setState) => ({
     setState({ tab: 'programming', value: programming });
   },
 
+  setDate: date => {
+    const programming = {
+      ...state.programming,
+      date,
+    };
+
+    setState({ tab: 'programming', value: programming });
+  },
+
   setStartTime: startTime => {
     const programming = {
       ...state.programming,
@@ -265,10 +311,19 @@ export const programmingActions = (state, setState) => ({
     setState({ tab: 'programming', value: programming });
   },
 
-  setPersonCategories: personCategories => {
+  setSpeakerCategoryId: speakerCategoryId => {
     const programming = {
       ...state.programming,
-      personCategories,
+      speakerCategoryId,
+    };
+
+    setState({ tab: 'programming', value: programming });
+  },
+
+  setMediatorCategoryId: mediatorCategoryId => {
+    const programming = {
+      ...state.programming,
+      mediatorCategoryId,
     };
 
     setState({ tab: 'programming', value: programming });
@@ -348,10 +403,10 @@ export const partnersActions = (state, setState) => ({
     setState({ tab: 'partners', value: partners });
   },
 
-  setSponsorCategoryId: sponsorCategoryId => {
+  setSponsorCategoryId: sponsorCategory => {
     const partners = {
       ...state.partners,
-      sponsorCategoryId,
+      sponsorCategoryId: sponsorCategory.value,
     };
 
     setState({ tab: 'partners', value: partners });

@@ -28,7 +28,7 @@ export const ListSpeakers = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   margin: 30px;
-  height: 430px;
+  height: fit-content;
   background: #ffffff;
   border-radius: 3px;
   width: 100%;

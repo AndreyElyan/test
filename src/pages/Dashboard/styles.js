@@ -68,6 +68,7 @@ export const ButtonStyle = styled.div`
   display: flex;
   align-items: center;
   padding: 0 10px;
+  cursor: pointer;
 
   strong {
     padding: 0 8px;

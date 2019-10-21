@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 import { simpleFlex } from '../../../../../styles/mixins';
 
+import { Container as ContainerInput } from '../../../../../components/Input/styles';
+
 export const Container = styled.div``;
 
 export const SponsorClass = styled.div`
@@ -77,4 +79,16 @@ export const WrapperButtonClass = styled.div`
   ${simpleFlex}
   margin-top: 425px;
   flex-direction: row-reverse;
+`;
+
+export const WrapperSponsers = styled.div`
+  ${simpleFlex};
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: 370px;
+
+  ${ContainerInput} + ${ContainerInput} {
+    margin-top: 20px;
+  }
 `;

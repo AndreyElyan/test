@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import image2base64 from 'image-to-base64';
+
 import Select from '4all-ui/components/Select';
 import Checkbox from '4all-ui/components/Checkbox';
 
@@ -10,6 +13,7 @@ import { useEvent } from '../../Context/index';
 import Search from '../../../../components/Icons/Search';
 import PickerImage from '../../../../components/Picker/Image';
 import Input from '../../../../components/Input';
+import InputDescription from '../../../../components/Input/InputDescription';
 import {
   Table,
   Header as HeaderTable,
@@ -36,10 +40,19 @@ import {
 
 export default function Partners({ match }) {
   const { id } = match.params;
+
+  const [partnerActive, setPartnerActive] = useState(null);
+
   const [checked, setChecked] = useState(true);
   const [order] = useState(null);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sponsorsList, setSponsorsList] = useState([]);
+
+  const [logoPreview, setLogoPreview] = useState(true);
+  const [logo, setLogo] = useState(true);
+  const [thumbPreview, setThumbPreview] = useState(true);
+  const [thumb, setThumb] = useState(true);
 
   const { state, actions } = useEvent();
   const { partners } = state;
@@ -47,13 +60,19 @@ export default function Partners({ match }) {
   const { partners: partnersActions, setContext } = actions;
 
   const getPartner = async () => {
-    const { data } = await api.get(`/partner/${id}`);
-    setContext({ tab: 'events', value: data });
+    const { data } = await api.get(`/partner/${partnerActive}?eventId=${id}`);
+
+    setContext({ tab: 'partners', value: data });
+    setChecked(data.exhibitor);
+    setLogo(data.logo);
+    setLogoPreview(data.logo);
+    setThumb(data.videoThumb);
+    setThumbPreview(data.videoThumb);
   };
 
   useEffect(() => {
     getPartner();
-  }, []);
+  }, [partnerActive]);
 
   const getList = async () => {
     if (loading) return null;
@@ -61,10 +80,7 @@ export default function Partners({ match }) {
     setLoading(true);
 
     try {
-      const { data } = await api.get(
-        `https://abf.homolog.api.somosdx.co/partner?itemsPerPage=100&currentPage=0&eventId=5d5dafda81ca861b5bf038dc`
-      );
-
+      const { data } = await api.get(`/partner?eventId=${id}`);
       setList(data);
     } catch (err) {
       error(err);
@@ -73,13 +89,81 @@ export default function Partners({ match }) {
     }
   };
 
+  const newPartner = async () => {
+    let data = null;
+
+    try {
+      const partner = {
+        name: partners.name,
+        description: partners.description,
+        videoUrl: partners.videoUrl,
+        siteUrl: partners.siteUrl,
+        isExhibitor: checked,
+        sponsorCategoryId: partners.sponsorCategoryId,
+        videoThumb: `data:image/png;base64,${thumb}`,
+        logo: `data:image/png;base64,${logo}`,
+      };
+
+      if (!partnerActive) {
+        const response = await api.post(`/partner?eventId=${id}`, partner);
+        data = response.data;
+      } else {
+        const response = await api.put(`/partner?eventId=${id}`, {
+          id: partnerActive,
+          ...partner,
+        });
+        data = response.data;
+      }
+
+      window.location.reload();
+
+      return data;
+    } catch (err) {
+      error('Não foi possível guardar os dados');
+    }
+  };
+
   useEffect(() => {
     getList();
-  }, [order, getList]);
+  }, [order]);
 
-  function submitForm(event) {
-    if (event) event.preventDefault();
+  const getSponsor = async () => {
+    const response = await api.get(`/sponsor-category?eventId=${id}`);
+    setSponsorsList(response.data);
+  };
+
+  useEffect(() => {
+    getSponsor();
+  }, []);
+
+  async function handleChangeThumb(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imagePreview = URL.createObjectURL(file);
+      setThumbPreview(imagePreview);
+
+      const image = await image2base64(imagePreview);
+      setThumb(image);
+    }
   }
+
+  async function handleChangeLogo(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imagePreview = URL.createObjectURL(file);
+      setLogoPreview(imagePreview);
+
+      const image = await image2base64(imagePreview);
+      setLogo(image);
+    }
+  }
+
+  const categorySelected = partners.sponsorCategoryId
+    ? sponsorsList.find(sponsor => sponsor.id === partners.sponsorCategoryId)
+    : null;
+
   return (
     <>
       <Container>
@@ -89,7 +173,12 @@ export default function Partners({ match }) {
           </header>
           <Content>
             <WrapperImg>
-              <PickerImage name="banner" />
+              <strong>Logo</strong>
+              <PickerImage
+                name="logo"
+                preview={logoPreview || logo}
+                handleChange={handleChangeLogo}
+              />
               <LabelWrapper>
                 <div>
                   <strong>JPEG,JPG</strong>
@@ -103,7 +192,13 @@ export default function Partners({ match }) {
             </WrapperImg>
 
             <WrapperImg>
-              <PickerImage name="banner" />
+              <strong>Thumb</strong>
+              <PickerImage
+                name="thumb"
+                preview={thumbPreview || thumb}
+                handleChange={handleChangeThumb}
+              />
+
               <LabelWrapper>
                 <div>
                   <strong>JPEG,JPG</strong>
@@ -127,7 +222,7 @@ export default function Partners({ match }) {
               />
             </div>
             <div className="inputs">
-              <Input
+              <InputDescription
                 onChange={partnersActions.setDescription}
                 value={partners.description}
                 label="Descrição"
@@ -151,47 +246,52 @@ export default function Partners({ match }) {
                 label="Link do Vídeo"
                 width="420px"
               />
-              <a href="/events/new/partners">
+              <Link to="/tutorial" target="_blank">
                 Como adicionar vídeo no YouTube?
-              </a>
+              </Link>
             </div>
             <WrapperSelect>
               <Select
                 width="288px"
+                placeholder="Selecione a Classe do Patrocinador"
                 options={[
                   {
-                    options: [
-                      { value: '4', label: 'Value 041231121' },
-                      { value: '5', label: '05' },
-                      { value: '6', label: '06' },
-                    ],
+                    options: sponsorsList.map(sponsor => ({
+                      value: sponsor.id,
+                      label: sponsor.title,
+                    })),
                   },
                 ]}
                 optionsListHeight="200px"
                 iconColor="#fe324b"
                 onChange={partnersActions.setSponsorCategoryId}
-                value={partners.sponsorCategoryId}
+                value={
+                  categorySelected
+                    ? {
+                        value: categorySelected.id,
+                        label: categorySelected.title,
+                      }
+                    : null
+                }
               />
 
               <Checkbox
                 name="expositor"
                 label="Expositor"
-                customStyles={{
-                  padding: ' 0 40px',
-                }}
+                customStyles={{ padding: ' 0 40px' }}
                 checked={checked}
                 onChange={() => setChecked(!checked)}
               />
             </WrapperSelect>
             <WrapperButtonPartner>
-              <Button>
+              <Button onClick={newPartner}>
                 <strong>Salvar Parceiro</strong>
               </Button>
             </WrapperButtonPartner>
           </Content>
         </NewPartner>
 
-        <SponsorCategory />
+        <SponsorCategory eventId={id} />
       </Container>
       <WrapperRegisters>
         <header>
@@ -199,7 +299,7 @@ export default function Partners({ match }) {
         </header>
 
         <HeaderRow>
-          <Form onSubmit={submitForm}>
+          <Form onSubmit={() => {}}>
             <Input
               name="text"
               placeholder="Nome, tipo, data, local, último status..."
@@ -221,19 +321,24 @@ export default function Partners({ match }) {
                 <strong>Vídeo</strong>
               </Column>
             </HeaderTable>
-            {list &&
-              list.length > 0 &&
-              list.map(element => (
-                <div key={element.id}>
+            {list.partners &&
+              list.partners.length > 0 &&
+              list.partners.map(element => (
+                <div
+                  key={element.id}
+                  onClick={() => {
+                    setPartnerActive(element.id);
+                  }}
+                >
                   <Row>
                     <Column width="45%">
-                      <p>{element.numberOfPages}</p>
+                      <p>{element.name}</p>
                     </Column>
                     <Column width="50%">
-                      <p>Desenvolvedor React</p>
+                      <p>{element.description}</p>
                     </Column>
                     <Column width="35%">
-                      <p>linkedin.com/andreyelyan</p>
+                      <p>{element.videoUrl}</p>
                     </Column>
                   </Row>
                 </div>

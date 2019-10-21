@@ -1,4 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react';
+/* eslint-disable no-restricted-globals */
+import React, { useCallback, useEffect, useState } from 'react';
+import image2base64 from 'image-to-base64';
 
 import api from '../../../../services/api';
 import { error } from '../../../../services/notifier';
@@ -7,6 +9,7 @@ import { useEvent } from '../../Context/index';
 
 import Search from '../../../../components/Icons/Search';
 import Input from '../../../../components/Input';
+import InputDescription from '../../../../components/Input/InputDescription';
 import {
   Table,
   Header as HeaderTable,
@@ -35,18 +38,48 @@ import {
 } from './styles';
 
 export default function Speaker({ match }) {
-  const { id } = match.params;
+  const [preview, setPreview] = useState('');
+  const [profileImage, setProfileImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
-  const [order] = useState(null);
+
+  const { id } = match.params;
 
   const { state, actions } = useEvent();
   const { speakers } = state;
-  const { speakers: speakersActions, setContext } = actions;
+  const { speakers: speakersActions } = actions;
 
   const submitForm = useCallback(event => {
     if (event) event.preventDefault();
   }, []);
+
+  async function handleChangeImage(e) {
+    const file = e.target.files[0];
+
+    if (file) {
+      const imagePreview = URL.createObjectURL(file);
+      setPreview(imagePreview);
+
+      const image = await image2base64(imagePreview);
+      setProfileImage(image);
+    }
+  }
+
+  const newSpeaker = async () => {
+    try {
+      const { data } = await api.post(`/person?eventId=${id}`, {
+        name: speakers.name,
+        description: speakers.description,
+        profileImage: `data:image/png;base64,${profileImage}`,
+        linkedin: speakers.linkedin,
+      });
+
+      window.location.reload();
+      return data;
+    } catch (err) {
+      error('Não foi possível guardar os dados');
+    }
+  };
 
   const getList = async () => {
     if (loading) return null;
@@ -55,10 +88,9 @@ export default function Speaker({ match }) {
 
     try {
       const { data } = await api.get(`/person?eventId=${id}`);
-
       setList(data);
     } catch (err) {
-      error('Não foi encontrado');
+      error(err);
     } finally {
       setLoading(false);
     }
@@ -66,37 +98,6 @@ export default function Speaker({ match }) {
 
   useEffect(() => {
     getList();
-  }, [order]);
-
-  const newSpeaker = async () => {
-    try {
-      const { data } = api.post(`/person?eventId=${id}`, {
-        name: speakers.name,
-        description: speakers.description,
-        profileImage: '',
-        linkedin: speakers.linkedin,
-      });
-
-      return data;
-    } catch (err) {
-      error('Não foi possível guardar os dados');
-    }
-  };
-
-  const getSpeaker = async () => {
-    const { data: dataSpeaker } = await api.get(`/person?eventId=${id}`);
-
-    setContext({
-      tab: 'events',
-      value: {
-        ...speakers,
-        ...dataSpeaker,
-      },
-    });
-  };
-
-  useEffect(() => {
-    getSpeaker();
   }, []);
 
   return (
@@ -104,7 +105,10 @@ export default function Speaker({ match }) {
       <NewSpeaker>
         <WrapperSpeaker>
           <div className="image">
-            <PickerImage name="avatar_id" />
+            <PickerImage
+              handleChange={handleChangeImage}
+              preview={preview || speakers.image}
+            />
             <LabelWrapper>
               <div>
                 <strong>JPEG,JPG</strong>
@@ -140,7 +144,7 @@ export default function Speaker({ match }) {
           </WrapperInputs>
 
           <WrapperDescription>
-            <Input
+            <InputDescription
               className="description"
               width="325px"
               height="135px"
@@ -178,16 +182,16 @@ export default function Speaker({ match }) {
         <TableWrapper>
           <Table>
             <HeaderTable>
-              <Column width="45%">
+              <Column width="35%">
                 <strong>Nome do Palestrante</strong>
               </Column>
-              <Column width="50%">
+              <Column width="35%">
                 <strong>Descrição</strong>
                 <button type="button">
                   <img src={sortdown} alt="" />
                 </button>
               </Column>
-              <Column width="35%">
+              <Column width="30%">
                 <strong>Link</strong>
                 <button type="button">
                   <img src={sortdown} alt="" />
@@ -195,17 +199,23 @@ export default function Speaker({ match }) {
               </Column>
             </HeaderTable>
 
-            <Row>
-              <Column width="45%">
-                <p>{speakers.name}</p>
-              </Column>
-              <Column width="50%">
-                <p>{speakers.description}</p>
-              </Column>
-              <Column width="35%">
-                <p>{speakers.linkedin}</p>
-              </Column>
-            </Row>
+            {list.people &&
+              list.people.length > 0 &&
+              list.people.map(element => (
+                <div key={element.id}>
+                  <Row>
+                    <Column width="35%">
+                      <p>{element.name}</p>
+                    </Column>
+                    <Column width="35%">
+                      <p>{element.description}</p>
+                    </Column>
+                    <Column width="30%">
+                      <p>{element.linkedin}</p>
+                    </Column>
+                  </Row>
+                </div>
+              ))}
           </Table>
         </TableWrapper>
       </ListSpeakers>

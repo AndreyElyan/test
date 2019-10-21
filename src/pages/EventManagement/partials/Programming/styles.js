@@ -50,7 +50,7 @@ export const WrapperTitle = styled.div`
 
 export const Registers = styled.div`
   margin: 30px;
-  height: 430px;
+  height: fit-content;
   background: #ffffff;
   border-radius: 3px;
   width: 100%;
@@ -111,13 +111,23 @@ export const LabelSpeaker = styled.div`
   margin-left: 65px;
 `;
 
+export const LabelType = styled.div`
+  ${Label}
+  margin-left: 285px;
+`;
+
 export const LabelMediator = styled.div`
   ${Label}
-  margin-left: 365px;
+  margin-left: 275px;
 `;
 
 export const WrapperSelectSpeaker = styled.div`
   ${simpleFlex}
+`;
+
+export const WrapperSelectType = styled.div`
+  ${simpleFlex}
+  margin-left: 30px;
 `;
 
 export const WrapperSelectMediator = styled.div`

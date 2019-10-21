@@ -13,6 +13,8 @@ export const WrapperTags = styled.div`
   height: 100%;
   border-radius: 3px;
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: hidden;
+  max-height: 900px;
 
   header {
     ${simpleFlex}
@@ -32,7 +34,9 @@ export const WrapperTags = styled.div`
   }
 `;
 
-export const WrapperInterest = styled.form``;
+export const WrapperInterest = styled.form`
+  margin-top: 30px;
+`;
 
 export const ContentTags = styled.div`
   ${simpleFlex};

@@ -7,9 +7,6 @@ const api = axios.create({
   baseURL: 'https://abf.homolog.api.somosdx.co',
 });
 
-/**
- * Adicionar o token as requisições, quando existir.
- */
 api.interceptors.request.use(request => {
   const tokenStorage = localStorage.getItem('@Omni:token');
   if (tokenStorage) {

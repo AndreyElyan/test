@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import api from '../../../../services/api';
 
@@ -17,11 +17,12 @@ export default function Stories({ match }) {
   const getStories = async () => {
     const { data } = await api.get(`/story?eventId=${id}`);
 
-    if (data.length) {
+    if (data.length > 0) {
       actions.setContext({
         tab: 'stories',
         value: data.map(story => {
           const content = story.contents[0];
+
           return {
             id: story.id,
             image: content.banner,
@@ -37,12 +38,12 @@ export default function Stories({ match }) {
     getStories();
   }, [id]);
 
-  return useMemo(
-    () => (
-      <Container>
-        {stories.map((story, index) => (
+  return (
+    <Container>
+      {stories.map((story, index) => {
+        return (
           <Story
-            key={index}
+            key={`${index}-${story.id}`}
             eventId={id}
             isLast={index === stories.length - 1}
             addNewStory={actions.stories.addNewStory}
@@ -52,9 +53,8 @@ export default function Stories({ match }) {
             }
             story={story}
           />
-        ))}
-      </Container>
-    ),
-    [stories, actions.stories]
+        );
+      })}
+    </Container>
   );
 }

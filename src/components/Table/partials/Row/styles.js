@@ -7,6 +7,7 @@ export const Container = styled.div`
   width: 100%;
   border-bottom: 1px solid #f5f5f5;
   transition: background 0.3s;
+  cursor: pointer;
 
   &:hover {
     background: #f5f5f5;

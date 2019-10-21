@@ -7,10 +7,12 @@ import { useEvent } from '../../Context';
 import { Container, FooterStyle, ButtonStyle } from './styles';
 
 const saveTrails = async ({ id, trails }) => {
-  if (trails.id) {
-    await api.put(`/track?eventId=${id}`, trails);
-  } else {
-    await api.post(`/track?eventId=${id}`, trails);
+  for (const trail of trails) {
+    if (trail.id) {
+      await api.put(`/track?eventId=${id}`, trail);
+    } else {
+      await api.post(`/track?eventId=${id}`, trail);
+    }
   }
 };
 
@@ -26,18 +28,11 @@ const saveEvents = async ({ id, title, days, status, trails }) => {
 
 export default function Footer() {
   const { state } = useEvent();
-  const {
-    banners,
-    events,
-    partners,
-    programming,
-    speakers,
-    sponsorCategory,
-    stories,
-  } = state;
+  const { events } = state;
 
   const submitForm = async () => {
     await saveEvents(events);
+    window.location.reload();
   };
 
   return (

@@ -11,7 +11,7 @@ export const Container = styled.div`
   justify-content: space-between;
 
   width: 100%;
-  height: 520px;
+  height: 720px;
   max-width: 1140px;
   background: #f9f9f9f9;
 `;
@@ -23,6 +23,7 @@ export const WrapperEvents = styled.div`
   max-width: 750px;
   height: 100%;
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: hidden;
 
   header {
     display: block;
@@ -103,6 +104,10 @@ export const WrapperTrails = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
+
+  & + & {
+    margin-top: 20px;
+  }
 
   input {
     font-weight: bold;

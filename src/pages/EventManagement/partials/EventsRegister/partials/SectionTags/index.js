@@ -40,7 +40,7 @@ const SectionTags = ({ eventId }) => {
 
   const removeTag = async index => {
     const tag = tags[index];
-    setTags(tags.filter((tag, tagIndex) => tagIndex !== index));
+    setTags(tags.filter(tagIndex => tagIndex !== index));
     await api.delete(`/interest/${tag.id}?eventId=${eventId}`);
   };
 

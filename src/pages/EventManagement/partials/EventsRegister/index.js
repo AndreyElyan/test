@@ -13,6 +13,7 @@ import Calendar from '../../../../components/Calendar';
 import SectionTags from './partials/SectionTags';
 
 import { useEvent } from '../../Context/index';
+import { DEFAULTS_TRAILS } from '../../Context/actions';
 
 import {
   Container,
@@ -55,12 +56,12 @@ const options = [
 function EventsRegister({ match }) {
   const { id } = match.params;
   const [isOpenCalendar, setOpenCalendar] = useState(false);
-  const [isOpenColors, setOpenColor] = useState(false);
 
   const { state, actions } = useEvent();
   const { events } = state;
 
   const { events: eventsActions, setContext } = actions;
+
   const handleOpenCalendar = useCallback(() => {
     if (!isOpenCalendar) setOpenCalendar(true);
   }, [isOpenCalendar]);
@@ -71,18 +72,6 @@ function EventsRegister({ match }) {
       if (isOpenCalendar) setOpenCalendar(false);
     },
     [isOpenCalendar]
-  );
-
-  const handleOpenColors = useCallback(() => {
-    if (!isOpenColors) setOpenColor(true);
-  }, [isOpenColors]);
-
-  const handleCloseColors = useCallback(
-    event => {
-      if (event) event.stopPropagation();
-      if (isOpenColors) setOpenColor(false);
-    },
-    [isOpenColors]
   );
 
   const handleChangeDates = useCallback(
@@ -109,8 +98,8 @@ function EventsRegister({ match }) {
     const { data: dataEvent } = await api.get(`/event/${id}`);
     const { data: dataTrails } = await api.get(`/track/?eventId=${id}`);
 
-    // eslint-disable-next-line prefer-destructuring
-    if (dataTrails[0]) dataEvent.trails = dataTrails[0];
+    if (dataTrails)
+      dataEvent.trails = !dataTrails.length ? DEFAULTS_TRAILS : dataTrails;
 
     setContext({
       tab: 'events',
@@ -128,8 +117,6 @@ function EventsRegister({ match }) {
   const statusSelected = events.status.value
     ? events.status
     : options.find(status => status.value === events.status);
-
-  const { title: titleTrails, color } = events.trails;
 
   return (
     <Container>
@@ -191,32 +178,62 @@ function EventsRegister({ match }) {
           <LabelTrail>
             <strong>Trilhas</strong>
           </LabelTrail>
-          <WrapperTrails>
-            <InputStyles
-              width="340px"
-              type="text"
-              description="Adicione uma trilha e escolha a cor de identificação"
-              background={color}
-              onChange={eventsActions.setTitleTrails}
-              value={titleTrails}
-            />
 
-            <ButtonStyle type="button" onClick={handleOpenColors}>
-              <img src={add} alt="Trails" />
-              <strong>Adicionar Trilha</strong>
-              <Overlay onClick={handleCloseColors} isOpen={isOpenColors} />
-              <WrapperColors onClick={handleCloseColors} isOpen={isOpenColors}>
-                {COLORS.map((colorObject, index) => (
-                  <LabelColor
-                    key={`${index}-${colorObject.value}`}
-                    color={colorObject.value}
-                    border={colorObject.border}
-                    onClick={() => eventsActions.setColor(colorObject.value)}
-                  />
-                ))}
-              </WrapperColors>
-            </ButtonStyle>
-          </WrapperTrails>
+          {events.trails.map((trail, index) => (
+            <WrapperTrails key={`${index}-${trail.id}`}>
+              <InputStyles
+                width="340px"
+                type="text"
+                description="Adicione uma trilha e escolha a cor de identificação"
+                background={trail.color}
+                onChange={value =>
+                  eventsActions.setTitleTrails({ value, index })
+                }
+                value={trail.title}
+              />
+
+              <ButtonStyle
+                type="button"
+                onClick={() => {
+                  if (!trail.isOpenColors) {
+                    eventsActions.toggleIsOpenColors({
+                      value: true,
+                      index,
+                    });
+                  }
+                }}
+              >
+                <img src={add} alt="Trails" />
+                <strong>Adicionar Trilha</strong>
+                <Overlay
+                  onClick={event => {
+                    if (event) event.stopPropagation();
+
+                    eventsActions.toggleIsOpenColors({
+                      value: false,
+                      index,
+                    });
+                  }}
+                  isOpen={trail.isOpenColors}
+                />
+                <WrapperColors isOpen={trail.isOpenColors}>
+                  {COLORS.map((colorObject, i) => (
+                    <LabelColor
+                      key={`${i}-${colorObject.value}`}
+                      color={colorObject.value}
+                      border={colorObject.border}
+                      onClick={() => {
+                        eventsActions.setColor({
+                          value: colorObject.value,
+                          index,
+                        });
+                      }}
+                    />
+                  ))}
+                </WrapperColors>
+              </ButtonStyle>
+            </WrapperTrails>
+          ))}
         </Content>
       </WrapperEvents>
       <SectionTags eventId={id} />

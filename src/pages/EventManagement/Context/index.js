@@ -52,4 +52,4 @@ EventProvider.propTypes = {
   children: any.isRequired,
 };
 
-export default EventProvider;
+export default React.memo(EventProvider);

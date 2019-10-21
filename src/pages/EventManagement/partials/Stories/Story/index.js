@@ -1,10 +1,10 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState } from 'react';
 import image2base64 from 'image-to-base64';
 
 import api from '../../../../../services/api';
+import { error } from '../../../../../services/notifier';
 
 import PickerImage from '../../../../../components/Picker/Image';
-
 import Input from '../../../../../components/Input';
 
 import Add from '../add.svg';
@@ -43,25 +43,29 @@ function Story({
   }
 
   const submitAddStory = async () => {
-    await api.post(`/story?eventId=${eventId}`, {
-      contents: [
-        {
-          texts: [
-            {
-              text: story.colorWhite,
-              color: 'white',
-              style: 'bold',
-            },
-            {
-              text: story.colorPink,
-              color: 'pink',
-              style: 'regular',
-            },
-          ],
-          banner: `data:image/png;base64,${story.image}`,
-        },
-      ],
-    });
+    try {
+      await api.post(`/story?eventId=${eventId}`, {
+        contents: [
+          {
+            texts: [
+              {
+                text: story.colorWhite,
+                color: '#FFFFFF',
+                style: 'regular',
+              },
+              {
+                text: story.colorPink,
+                color: '#FF007F',
+                style: 'regular',
+              },
+            ],
+            banner: `data:image/png;base64,${story.image}`,
+          },
+        ],
+      });
+    } catch (err) {
+      error('Erro ao guardar os dados');
+    }
   };
 
   const addStories = () => {
@@ -87,6 +91,7 @@ function Story({
         <PickerImage
           handleChange={handleChangeImage}
           preview={preview || story.image}
+          id={story.id}
         />
         <LabelWrapper>
           <div>

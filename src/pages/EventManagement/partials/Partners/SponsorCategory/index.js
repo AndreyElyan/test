@@ -1,4 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
+
+import api from '../../../../../services/api';
 
 import Input from '../../../../../components/Input';
 
@@ -7,33 +9,61 @@ import add from '../../../../../assets/button/add.svg';
 import {
   SponsorClass,
   WrapperSponsors,
-  WrapperButtonClass,
   Button,
+  WrapperSponsers,
 } from './styles';
 
-function SponsorCategory({
-  sponsor,
-  addNewSponsor,
-  deleteSponsor,
-  editSponsor,
-}) {
+function SponsorCategory({ eventId }) {
+  const [newSponsor, setNewSponsor] = useState('');
+  const [sponsorsList, setSponsorsList] = useState([]);
+
+  const handleAddSponsor = async e => {
+    e.preventDefault();
+
+    const reponse = await api.post(`/sponsor-category?eventId=${eventId}`, {
+      title: newSponsor,
+    });
+
+    setNewSponsor('');
+    setSponsorsList([...sponsorsList, reponse.data]);
+  };
+
+  const getSponsor = async () => {
+    const response = await api.get(`/sponsor-category?eventId=${eventId}`);
+    setSponsorsList(response.data);
+  };
+
+  useEffect(() => {
+    getSponsor();
+  }, []);
+
   return (
     <SponsorClass>
       <header>
         <strong>Classe dos Patrocinadores</strong>
       </header>
 
+      <WrapperSponsers>
+        {sponsorsList &&
+          sponsorsList.map(element => (
+            <Input width="335px" value={element.title} disabled />
+          ))}
+      </WrapperSponsers>
+
       <WrapperSponsors>
-        <h1>1º</h1>
-        <Input width="335px" />
+        <Input
+          width="335px"
+          value={newSponsor}
+          onChange={value => setNewSponsor(value)}
+        />
       </WrapperSponsors>
 
-      <WrapperButtonClass>
-        <Button type="button">
+      <WrapperSponsors>
+        <Button type="button" onClick={e => handleAddSponsor(e)}>
           <img src={add} alt="" />
           <strong>Adicionar Classe</strong>
         </Button>
-      </WrapperButtonClass>
+      </WrapperSponsors>
     </SponsorClass>
   );
 }
